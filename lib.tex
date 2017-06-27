@@ -1,0 +1,7 @@
+\directlua{require("lib_resources/script.lua")}
+
+\newenvironment{song}[1][]{\directlua{startrecording("#1")}}{\directlua{stoprecording()}}
+
+\newcommand{\songchord}[1]{\textbf{#1}}
+\newcommand{\songverse}[1]{\textbf{#1.}}
+\newcommand{\songchorus}{\textbf{Ch}}
