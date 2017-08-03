@@ -51,10 +51,10 @@ function print_song(title, author, body)
 		elseif mode == 1 then -- inside a command
 			if c == ">" then
 				mode = 0
-				if command == "v" then
+				if command == "v" or command == "s" then
 					verse_number = verse_number + 1
 					output = output .. "\\songverse{" .. verse_number .. "} "
-				elseif command == "ch" then
+				elseif command == "ch" or command == "r" then
 					output = output .. "\\songchorus "
 					if chorusline == "" then
 						mode = 2
