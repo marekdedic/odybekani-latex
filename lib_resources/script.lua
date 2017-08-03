@@ -28,6 +28,7 @@ function print_song(title, body)
 	local output = "\\section*{" .. title .. "} \n"
 	local verse_number = 0
 	local chorusline = ""
+	local afterchord = false
 	for c in body:gmatch(".") do
 		if mode == 0 then -- Normal lyrics
 			if c == "<" then
@@ -36,6 +37,10 @@ function print_song(title, body)
 			elseif c =="\n" then
 				output = output .. " \\\\ \n"
 			else
+				if c ~= " " and afterchord then
+					output = output .. "\\songchordkern "
+					afterchord = false
+				end
 				output = output .. c
 			end
 		elseif mode == 1 then -- inside a command
@@ -53,6 +58,7 @@ function print_song(title, body)
 					end
 				else
 					output = output .. "\\songchord{" .. command .. "} "
+					afterchord = true
 				end
 			else
 				command = command .. c
@@ -65,6 +71,10 @@ function print_song(title, body)
 				mode = 0
 				output = output .. " \\\\ \n"
 			else
+				if c ~= " " and afterchord then
+					output = output .. "\\songchordkern "
+					afterchord = false
+				end
 				chorusline = chorusline .. c
 				output = output .. c
 			end
@@ -72,6 +82,7 @@ function print_song(title, body)
 			if c == ">" then
 				mode = 2
 				output = output .. "\\songchord{" .. command .. "} "
+				afterchord = true
 			else
 				command = command .. c
 			end
