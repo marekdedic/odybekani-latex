@@ -88,6 +88,6 @@ function print_song(title, body)
 			end
 		end
 	end
-	print("\n" .. output)
+	--print("\n" .. output)
 	tex.print(output)
 end
