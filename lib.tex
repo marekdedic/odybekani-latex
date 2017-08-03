@@ -1,9 +1,39 @@
+\documentclass{article}
 \directlua{require("lib_resources/script.lua")}
+
+\usepackage{geometry}
+\usepackage{polyglossia}
+\usepackage{microtype}
+\usepackage{fontspec}
+\usepackage{csquotes}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage[abspage]{zref}
+\usepackage{changepage}
+\usepackage{ifthen}
+
+\strictpagecheck
 
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
 
-\newenvironment{song}[2][]{\clearpage\directlua{startrecording("#2", "#1")}}{\directlua{stoprecording()}}
+\newcounter{songcnt}
+
+\newsavebox{\songbox}
+\newcommand\songmeasurebox{\dimexpr\ht\songbox+\dp\songbox\relax}
+
+\newenvironment{song}[4][]{\directlua{startrecording("#2", "#3", "#1", "#4")}}{%
+	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{stoprecording()}\end{minipage}\end{lrbox}
+	\checkoddpage
+	\ifoddpage
+		\ifthenelse{\songmeasurebox>\textheight}{\null\newpage\null\newpage OVER}{\clearpage OK}%
+		ODD
+	\else
+		\clearpage
+		EVEN
+	\fi
+	\directlua{stoprecording()}
+}
 
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\strut\raisebox{1em}{\textbf{#1}}}\kern0.2em}
 \newcommand{\songpart}[1]{\llap{\textcolor{gray}{\raisebox{-0.4em}[0em][0em]{\textbf{ \huge #1}}\kern0.4em}}}
