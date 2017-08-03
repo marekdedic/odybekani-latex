@@ -1,13 +1,15 @@
 \directlua{require("lib_resources/script.lua")}
+
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
 
 \newenvironment{song}[1][]{\directlua{startrecording("#1")}}{\directlua{stoprecording()}}
 
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\strut\raisebox{1em}{\textbf{#1}}}\kern0.2em}
+\newcommand{\songpart}[1]{\llap{\textcolor{gray}{\raisebox{-0.4em}[0em][0em]{\textbf{ \huge #1}}\kern0.4em}}}
 
 \newcommand{\songchord}[1]{\settowidth{\songchordtmp}{\songchordbox{#1}}\addtolength{\songchordlen}{\songchordtmp}\songchordbox{#1}}
-\newcommand{\songverse}[1]{\textbf{#1.}}
-\newcommand{\songchorus}{\textbf{Ch}}
+\newcommand{\songverse}[1]{\songpart{#1.}\kern-0.05em}
+\newcommand{\songchorus}{\songpart{R:}}
 
 \newcommand{\songchordkern}{\kern-\songchordlen\setlength{\songchordlen}{0em}}
