@@ -54,7 +54,7 @@ function print_song(title, body)
 					if chorusline == "" then
 						mode = 2
 					else
-						output = output .. chorusline
+						output = output .. chorusline .. "..."
 					end
 				else
 					output = output .. "\\songchord{" .. command .. "} "
