@@ -1,6 +1,7 @@
 do 
 	local BUFFER = ""
 	local TITLE = ""
+	local AUTHOR = ""
 	function readbuf(buffer)
 		BUFFER = BUFFER .. buffer .. "\n" 
 		if buffer:match("%s*\\end{song}") then 
@@ -9,8 +10,9 @@ do
 		return ""
 	end
 
-	function startrecording(title)
+	function startrecording(title, author)
 		TITLE = title
+		AUTHOR = author
 		luatexbase.add_to_callback('process_input_buffer', readbuf, 'readbuf')
 	end
 
@@ -18,14 +20,17 @@ do
 		luatexbase.remove_from_callback('process_input_buffer', 'readbuf')
 		local clean_buffer = BUFFER:gsub("\\end{song}\n","")
 		BUFFER = ""
-		print_song(TITLE, clean_buffer)
+		print_song(TITLE, AUTHOR, clean_buffer)
 	end
 end
 
-function print_song(title, body)
+function print_song(title, author, body)
 	local mode = 0
 	local command = ""
 	local output = "\\section*{" .. title .. "} \n"
+	if author ~= "" then
+		output = output .. "AUTOR: " .. author .. "\\\\ \n"
+	end
 	local verse_number = 0
 	local chorusline = ""
 	local afterchord = false
