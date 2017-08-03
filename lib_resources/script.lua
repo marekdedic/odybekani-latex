@@ -1,7 +1,10 @@
 do 
 	local BUFFER = ""
+	local NUMBER = ""
 	local TITLE = ""
 	local AUTHOR = ""
+	local URL = ""
+	local RECORDING = false
 	function readbuf(buffer)
 		BUFFER = BUFFER .. buffer .. "\n" 
 		if buffer:match("%s*\\end{song}") then 
@@ -10,24 +13,30 @@ do
 		return ""
 	end
 
-	function startrecording(title, author)
+	function startrecording(number, title, author, url)
+		NUMBER = number
 		TITLE = title
 		AUTHOR = author
+		URL = url
+		BUFFER = ""
 		luatexbase.add_to_callback('process_input_buffer', readbuf, 'readbuf')
+		RECORDING = true
 	end
 
 	function stoprecording()
-		luatexbase.remove_from_callback('process_input_buffer', 'readbuf')
+		if RECORDING then
+			luatexbase.remove_from_callback('process_input_buffer', 'readbuf')
+		end
+		RECORDING = false
 		local clean_buffer = BUFFER:gsub("\\end{song}\n","")
-		BUFFER = ""
-		print_song(TITLE, AUTHOR, clean_buffer)
+		print_song(NUMBER, TITLE, AUTHOR, URL, clean_buffer)
 	end
 end
 
-function print_song(title, author, body)
+function print_song(number, title, author, url, body)
 	local mode = 0
 	local command = ""
-	local output = "\\section*{" .. title .. "} \n"
+	local output = "\\section*{" .. number .. ". " .. title .. "} \n"
 	if author ~= "" then
 		output = output .. "AUTOR: " .. author .. "\\\\ \n"
 	end
@@ -40,6 +49,10 @@ function print_song(title, author, body)
 				mode = 1
 				command = ""
 			elseif c =="\n" then
+				if afterchord then
+					output = output .. "\\songchordkern "
+					afterchord = false
+				end
 				output = output .. " \\\\ \n"
 			else
 				if c ~= " " and afterchord then
@@ -74,6 +87,10 @@ function print_song(title, author, body)
 				command = ""
 			elseif c == "\n" then
 				mode = 0
+				if afterchord then
+					output = output .. "\\songchordkern "
+					afterchord = false
+				end
 				output = output .. " \\\\ \n"
 			else
 				if c ~= " " and afterchord then
@@ -93,6 +110,7 @@ function print_song(title, author, body)
 			end
 		end
 	end
-	--print("\n" .. output)
+	output = output .. "URL: " .. url .. "\n"
+	print("\n" .. body)
 	tex.print(output)
 end
