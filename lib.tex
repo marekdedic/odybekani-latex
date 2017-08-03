@@ -3,7 +3,7 @@
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
 
-\newenvironment{song}[1][]{\directlua{startrecording("#1")}}{\directlua{stoprecording()}}
+\newenvironment{song}[2][]{\directlua{startrecording("#2", "#1")}}{\directlua{stoprecording()}}
 
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\strut\raisebox{1em}{\textbf{#1}}}\kern0.2em}
 \newcommand{\songpart}[1]{\llap{\textcolor{gray}{\raisebox{-0.4em}[0em][0em]{\textbf{ \huge #1}}\kern0.4em}}}
