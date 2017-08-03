@@ -3,7 +3,7 @@
 \usepackage{microtype}
 \usepackage{fontspec}
 \usepackage{csquotes}
-\usepackage[usenames]{xcolor}
+\usepackage{xcolor}
 
 % Page geometry
 \geometry{a5paper,twoside,top=45pt,bottom=60pt,inner=80pt,outer=45pt,headsep=5pt,footskip=20pt}
@@ -11,4 +11,12 @@
 % Fonts
 \setmainlanguage{czech}
 \renewcommand{\baselinestretch}{1.1}
-\setmainfont[Path-template_resources/,BoldFont=OpenSans-Bold,ItalicFont=OpenSans-Italic,BoldItalicFont=OpenSans-BoldItalic]{OpenSans-Regular}
+\setmainfont[Path=template_resources/,BoldFont=RobotoSlab-Bold]{RobotoSlab-Regular}
+\newfontfamily\songnamefont[Path=template_resources/]{METROLOX}
+\newfontfamily\songauthorfont[Path=template_resources/]{METROLOX}
+\newfontfamily\songurlfont[Path=template_resources/,BoldFont=RobotoSlab-Bold]{RobotoSlab-Regular}
+\newfontfamily\songpartfont[Path=template_resources/,BoldFont=RobotoSlab-Bold]{RobotoSlab-Regular}
+\newfontfamily\songtitlebigfont[Path=template_resources/]{OdyMarathon-Regular}
+\newfontfamily\songtitlesmallfont[Path=template_resources/]{OdyMarathon-Regular}
+
+\definecolor{songpartcolor}{HTML}{8C8C8C}
