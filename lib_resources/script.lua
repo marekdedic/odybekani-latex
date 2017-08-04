@@ -36,11 +36,7 @@ end
 function print_song(number, title, author, url, body)
 	local mode = 0
 	local command = ""
-	local output = "\\section*{" .. number .. ") " .. title .. "} \n"
-	if author ~= "" then
-		output = output .. "AUTOR: " .. author .. "\\\\ \n"
-	end
-	output = output .. "\\songseturl{" .. url .. "}\n"
+	local output = "\\songsettitleurl{" .. number .. ") " .. title .. "}{" .. url .. "}\n"
 	local verse_number = 0
 	local chorusline = ""
 	local afterchord = false
