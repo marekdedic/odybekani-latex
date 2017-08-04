@@ -37,6 +37,9 @@ function print_song(number, title, author, url, body)
 	local mode = 0
 	local command = ""
 	local output = "\\songsettitleurl{" .. number .. ") " .. title .. "}{" .. url .. "}\n"
+	if author ~= "" then
+		output = output .. "\\songsetauthor{" .. author .. "}\n\n"
+	end
 	local verse_number = 0
 	local chorusline = ""
 	local afterchord = false

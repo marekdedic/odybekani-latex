@@ -16,6 +16,7 @@
 \usepackage{eso-pic}
 \usepackage{calc}
 \usepackage{fancyhdr}
+\usepackage{textpos}
 
 \pagestyle{empty}
 
@@ -57,6 +58,19 @@
 }
 
 \newcommand{\songsettitleurl}[2]{\markboth{#1}{#2}}
+
+\newcommand{\songsetauthor}[1]{
+	\checkoddpage
+	\ifoddpage
+		\begin{textblock}{20}(5.7, -0.6)
+			\songauthorfont #1
+		\end{textblock}
+	\else
+		\begin{textblock}{20}(0, -0.8)
+			\songauthorfont #1
+		\end{textblock}
+	\fi \vspace{-2em} \leavevmode \\
+}
 
 \newcommand{\songtitlepage}{%
 	\begin{titlepage}
