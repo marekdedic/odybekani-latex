@@ -40,6 +40,7 @@ function print_song(number, title, author, url, body)
 	if author ~= "" then
 		output = output .. "AUTOR: " .. author .. "\\\\ \n"
 	end
+	output = output .. "\\songseturl{" .. url .. "}\n"
 	local verse_number = 0
 	local chorusline = ""
 	local afterchord = false
@@ -110,7 +111,6 @@ function print_song(number, title, author, url, body)
 			end
 		end
 	end
-	output = output .. "URL: " .. url .. "\n"
 	--print("\n" .. body)
 	tex.print(output)
 end
