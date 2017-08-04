@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[10pt]{extarticle}
 \directlua{require("lib_resources/script.lua")}
 
 \usepackage{geometry}
@@ -11,8 +11,11 @@
 \usepackage[abspage]{zref}
 \usepackage{changepage}
 \usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage{lmodern}
 
 \strictpagecheck
+\setmainlanguage{czech}
 
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
@@ -41,6 +44,17 @@
 \newcommand{\songchorus}{\songpart{R:}}
 \newcommand{\songchordkern}{\kern-\songchordlen\setlength{\songchordlen}{0em}}
 
-\titleformat*{\section}{\songauthorfont}
+\titleformat*{\section}{\songnamefont}
+
+\newcommand{\songtitlepage}{%
+	\begin{titlepage}
+		\centering
+		{\songtitletopfont \uppercase{\songtitletop}}
+
+		\includegraphics[width=0.75\textwidth]{\songlogo}
+
+		{\songtitlebottomfont \uppercase{\songtitlebottom}}
+	\end{titlepage}
+}
 
 \input{template.tex}
