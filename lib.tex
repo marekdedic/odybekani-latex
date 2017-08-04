@@ -52,7 +52,7 @@
 \newcommand{\songchordkern}{\kern-\songchordlen\setlength{\songchordlen}{0em}}
 
 \fancypagestyle{songstyle}{\fancyhf{}\renewcommand{\headrulewidth}{1pt}\renewcommand{\footrulewidth}{1pt}
-	\fancyhead[C]{\rule[-2ex]{0pt}{2ex}\songnamefont\leftmark}
+	\fancyhead[C]{\rule[-1.5ex]{0pt}{1.5ex}\songnamefont\leftmark}
 	\fancyfoot[RE]{\songurlfont\rightmark}
 	\fancyfoot[LO]{\songurlfont\rightmark}
 }
@@ -62,11 +62,11 @@
 \newcommand{\songsetauthor}[1]{
 	\checkoddpage
 	\ifoddpage
-		\begin{textblock}{20}(5.7, -0.6)
+		\begin{textblock}{20}(5.5, -0.8)
 			\songauthorfont #1
 		\end{textblock}
 	\else
-		\begin{textblock}{20}(0, -0.8)
+		\begin{textblock}{20}(0, -0.7)
 			\songauthorfont #1
 		\end{textblock}
 	\fi \vspace{-2em} \leavevmode \\
@@ -91,7 +91,7 @@
 }
 
 % Page geometry
-\geometry{a5paper,twoside,top=65pt,bottom=50pt,inner=55pt,outer=55pt,headsep=20pt,footskip=20pt}
+\geometry{a5paper,twoside,top=70pt,bottom=50pt,inner=55pt,outer=55pt,headheight=25pt,headsep=20pt,footskip=20pt}
 \newcommand{\addheaderimg}{
 	\AddToShipoutPictureBG{%
 		\put(-60,0){%
