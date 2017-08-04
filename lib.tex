@@ -30,8 +30,8 @@
 	\null\clearpage\null
 	\checkoddpage
 	\ifoddpage
-	\else
 		\ifthenelse{\songmeasurebox>\textheight}{\null\newpage\null}{\clearpage}%
+	\else
 	\fi
 	\directlua{stoprecording()}
 }
@@ -49,11 +49,17 @@
 \newcommand{\songtitlepage}{%
 	\begin{titlepage}
 		\centering
+		\null
+		\vspace{0.3cm}
 		{\songtitletopfont \uppercase{\songtitletop}}
 
+		\vfill
 		\includegraphics[width=0.75\textwidth]{\songlogo}
+		\vfill
 
 		{\songtitlebottomfont \uppercase{\songtitlebottom}}
+		\vspace{1.5cm}
+		\null
 	\end{titlepage}
 }
 
