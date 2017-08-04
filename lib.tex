@@ -33,10 +33,10 @@
 
 \newenvironment{song}[4][]{\directlua{startrecording("#2", "#3", "#1", "#4")}}{%
 	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{stoprecording()}\end{minipage}\end{lrbox}
-	\null\clearpage\null
+	\clearpage
 	\checkoddpage
 	\ifoddpage
-		\ifthenelse{\songmeasurebox>\textheight}{\null\newpage\null}{\clearpage}%
+		\ifthenelse{\songmeasurebox>\textheight}{\null\clearpage\null}{\null}%
 	\fi
 	\thispagestyle{songstyle}
 	\leavevmode \\
