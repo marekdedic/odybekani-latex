@@ -13,6 +13,8 @@
 \usepackage{ifthen}
 \usepackage{graphicx}
 \usepackage{lmodern}
+\usepackage{eso-pic}
+\usepackage{calc}
 
 \strictpagecheck
 \setmainlanguage{czech}
@@ -61,6 +63,21 @@
 		\vspace{1.5cm}
 		\null
 	\end{titlepage}
+}
+
+% Page geometry
+\geometry{a5paper,twoside,top=30pt,bottom=50pt,inner=55pt,outer=35pt,headsep=5pt,footskip=20pt}
+\AddToShipoutPictureBG{%
+	\put(-75,0){%
+		\parbox[b][\paperheight + 30pt]{\paperwidth + 150pt}{%
+			\checkoddpage
+			\ifoddpage
+				\raggedleft
+			\fi
+			\includegraphics[width=150pt]{\songlogo}
+			\vfill
+		}
+	}
 }
 
 \input{template.tex}
