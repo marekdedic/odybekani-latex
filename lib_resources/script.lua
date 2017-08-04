@@ -111,6 +111,6 @@ function print_song(number, title, author, url, body)
 		end
 	end
 	output = output .. "URL: " .. url .. "\n"
-	print("\n" .. body)
+	--print("\n" .. body)
 	tex.print(output)
 end

@@ -24,13 +24,11 @@
 
 \newenvironment{song}[4][]{\directlua{startrecording("#2", "#3", "#1", "#4")}}{%
 	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{stoprecording()}\end{minipage}\end{lrbox}
+	\null\clearpage\null
 	\checkoddpage
 	\ifoddpage
-		\ifthenelse{\songmeasurebox>\textheight}{\null\newpage\null\newpage OVER}{\clearpage OK}%
-		ODD
 	\else
-		\clearpage
-		EVEN
+		\ifthenelse{\songmeasurebox>\textheight}{\null\newpage\null}{\clearpage}%
 	\fi
 	\directlua{stoprecording()}
 }
