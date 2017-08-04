@@ -63,7 +63,7 @@ function print_song(number, title, author, url, body)
 				mode = 0
 				if command == "v" or command == "s" then
 					verse_number = verse_number + 1
-					output = output .. "\\songverse{" .. verse_number .. "} "
+					output = output .. "\\songverse{" .. verse_number .. "}"
 				elseif command == "ch" or command == "r" then
 					output = output .. "\\songchorus "
 					if chorusline == "" then
@@ -72,7 +72,7 @@ function print_song(number, title, author, url, body)
 						output = output .. chorusline .. "..."
 					end
 				else
-					output = output .. "\\songchord{" .. command .. "} "
+					output = output .. "\\songchord{" .. command .. "}"
 					afterchord = true
 				end
 			else
@@ -100,7 +100,7 @@ function print_song(number, title, author, url, body)
 		elseif mode == 3 then -- first occurence of chorus, inside a command
 			if c == ">" then
 				mode = 2
-				output = output .. "\\songchord{" .. command .. "} "
+				output = output .. "\\songchord{" .. command .. "}"
 				afterchord = true
 			else
 				command = command .. c

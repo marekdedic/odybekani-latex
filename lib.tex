@@ -73,19 +73,22 @@
 		\vspace{1.5cm}
 		\null
 	\end{titlepage}
+	\addheaderimg
 }
 
 % Page geometry
 \geometry{a5paper,twoside,top=65pt,bottom=50pt,inner=55pt,outer=55pt,headsep=20pt,footskip=20pt}
-\AddToShipoutPictureBG{%
-	\put(-60,0){%
-		\parbox[b][\paperheight + 20pt]{\paperwidth + 120pt}{%
-			\checkoddpage
-			\ifoddpage
-				\raggedleft
-			\fi
-			\includegraphics[width=120pt]{\songlogo}
-			\vfill
+\newcommand{\addheaderimg}{
+	\AddToShipoutPictureBG{%
+		\put(-60,0){%
+			\parbox[b][\paperheight + 20pt]{\paperwidth + 120pt}{%
+				\checkoddpage
+				\ifoddpage
+					\raggedleft
+				\fi
+				\includegraphics[width=120pt]{\songlogo}
+				\vfill
+			}
 		}
 	}
 }
