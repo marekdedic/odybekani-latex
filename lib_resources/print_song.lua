@@ -13,7 +13,7 @@ do
 		return ""
 	end
 
-	function startrecording(number, title, author, url)
+	function startrecording(number, title, author, url, jobname)
 		NUMBER = number
 		TITLE = title
 		AUTHOR = author
@@ -21,6 +21,8 @@ do
 		BUFFER = ""
 		luatexbase.add_to_callback('process_input_buffer', readbuf, 'readbuf')
 		RECORDING = true
+		los = io.open(jobname .. ".los", "a")
+		los:write(number .. "|" .. title .. "\n")
 	end
 
 	function stoprecording()
@@ -110,6 +112,6 @@ function print_song(number, title, author, url, body)
 			end
 		end
 	end
-	--print("\n" .. body)
+	print("\n" .. output)
 	tex.print(output)
 end
