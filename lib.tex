@@ -20,6 +20,7 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
+\usepackage{tocloft}
 
 
 \newpagestyle{songempty}{%
@@ -32,12 +33,19 @@
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
 
-\newcounter{songcnt}
+\newcommand{\listsongname}{Obsah}
+\newlistof{song}{los}{\listsongname}
+\cftpagenumbersoff{song}
 
 \newsavebox{\songbox}
 \newcommand\songmeasurebox{\dimexpr\ht\songbox+\dp\songbox\relax}
 
-\newenvironment{song}[4][]{\directlua{startrecording("#2", "#3", "#1", "#4")}}{%
+\newcommand{\songentry}[2]{%
+	\refstepcounter{song}
+	\addcontentsline{los}{song}{\protect #1 \hfill #2}
+}
+
+\newenvironment{song}[4][]{\directlua{startrecording("#2", "#3", "#1", "#4")}\songentry{#3}{#2}}{%
 	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{stoprecording()}\end{minipage}\end{lrbox}
 	\clearpage
 	\checkoddpage
