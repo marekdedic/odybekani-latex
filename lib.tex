@@ -21,6 +21,7 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
+\usepackage{multicol}
 
 \newpagestyle{songempty}{%
 	\footrule}
@@ -36,9 +37,29 @@
 	#2 \hfill #1 \\
 }
 
-\newcommand{\listofsongs}{%
+\let\multicolmulticols\multicols
+\let\endmulticolmulticols\endmulticols
+\RenewDocumentEnvironment{multicols}{mO{}}{%
+	\ifnum#1=1
+		#2%
+	\else
+		\multicolmulticols{#1}[#2]
+	\fi
+}{%
+	\ifnum#1=1
+	\else
+		\endmulticolmulticols
+	\fi
+}
+
+\newcommand{\listofsongs}[1][1]{%
 	\clearpage
-	\directlua{print_los("\jobname")}
+	\null
+	\vfill
+	\begin{multicols}{#1}
+		\directlua{print_los("\jobname")}
+	\end{multicols}
+	\vfill
 	}
 
 \newsavebox{\songbox}
