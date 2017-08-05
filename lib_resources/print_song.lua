@@ -45,6 +45,7 @@ function print_song(number, title, author, url, body)
 	local verse_number = 0
 	local chorusline = ""
 	local afterchord = false
+	body = trim(body)
 	for c in body:gmatch(".") do
 		if mode == 0 then -- Normal lyrics
 			if c == "<" then
@@ -112,6 +113,9 @@ function print_song(number, title, author, url, body)
 			end
 		end
 	end
-	print("\n" .. output)
 	tex.print(output)
+end
+
+function trim(s)
+	return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
