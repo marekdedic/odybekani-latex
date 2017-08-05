@@ -20,7 +20,10 @@
 \usepackage{array}
 \usepackage{booktabs}
 
-\pagestyle{empty}
+
+\newpagestyle{songempty}{%
+	\footrule}
+\pagestyle{songempty}
 
 \strictpagecheck
 \setmainlanguage{czech}
@@ -62,15 +65,7 @@
 \newshortmark\songurlmark
 
 \newpagestyle{songstyle}{
-	%\headrule
 	\footrule
-	%\sethead[]
-		%[\songnamefont \topshortmark\songnamemark]
-		%[\songauthorfont \topshortmark\songauthormark]
-		%{\songauthorfont \topshortmark\songauthormark}
-		%{\songnamefont \topshortmark\songnamemark}
-		%{}
-
 	\sethead[]
 		[\begin{tabular}{@{}>{\raggedleft\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{c}{\centering \songnamefont \topshortmark\songnamemark} \\\midrule {\songauthorfont \topshortmark\songauthormark \hspace{0.5cm} \null}\end{tabular}]
 		[]{}
