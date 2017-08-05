@@ -53,7 +53,7 @@
 }
 
 \newcommand{\listofsongs}[1][1]{%
-	\clearpage
+	\cleardoublepage
 	\null
 	\vfill
 	\begin{multicols}{#1}
@@ -70,11 +70,12 @@
 	\clearpage
 	\checkoddpage
 	\ifoddpage
-		\ifthenelse{\songmeasurebox>\textheight}{\null\clearpage\null}{\null}%
+		\ifthenelse{\songmeasurebox>\textheight}{\null\clearpage}{}
 	\fi
 	\thispagestyle{songstyle}
 	\directlua{stoprecording()}
-	\songsetauthor{}
+	\renewcommand{\songauthormark}{}
+	\preshortmark\songauthormark
 }
 
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\strut\raisebox{1em}{\textbf{#1}}}\kern0.2em}
