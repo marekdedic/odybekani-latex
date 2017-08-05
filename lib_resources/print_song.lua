@@ -46,21 +46,30 @@ function print_song(number, title, author, url, body)
 	local chorusline = ""
 	local afterchord = false
 	body = trim(body)
-	for c in body:gmatch(".") do
+	for i = 1, #body do
+		local c = body:sub(i, i)
 		if mode == 0 then -- Normal lyrics
 			if c == "<" then
 				mode = 1
 				command = ""
 			elseif c =="\n" then
 				if afterchord then
-					output = output .. "\\songchordkern "
+					output = output .. "\\songchordkern{}"
 					afterchord = false
 				end
 				output = output .. " \\\\ \n"
 			else
-				if c ~= " " and afterchord then
-					output = output .. "\\songchordkern "
-					afterchord = false
+				if afterchord then
+					for j = i, #body do
+						local d = body:sub(j, j)
+						if d ~= " " then
+							if d ~= "<" then
+								output = output .. "\\songchordkern{}"
+								afterchord = false
+							end
+							break
+						end
+					end
 				end
 				output = output .. c
 			end
@@ -91,14 +100,22 @@ function print_song(number, title, author, url, body)
 			elseif c == "\n" then
 				mode = 0
 				if afterchord then
-					output = output .. "\\songchordkern "
+					output = output .. "\\songchordkern{}"
 					afterchord = false
 				end
 				output = output .. " \\\\ \n"
 			else
-				if c ~= " " and afterchord then
-					output = output .. "\\songchordkern "
-					afterchord = false
+				if afterchord then
+					for j = i, #body do
+						local d = body:sub(j, j)
+						if d ~= " " then
+							if d ~= "<" then
+								output = output .. "\\songchordkern{}"
+								afterchord = false
+							end
+							break
+						end
+					end
 				end
 				chorusline = chorusline .. c
 				output = output .. c
