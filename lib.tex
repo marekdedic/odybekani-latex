@@ -19,6 +19,7 @@
 \usepackage[extramarks]{titleps}
 \usepackage{array}
 \usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
 
 
 \newpagestyle{songempty}{%
@@ -81,7 +82,7 @@
 \newcommand{\songsettitleurl}[2]{
 	\renewcommand{\songnamemark}{#1}
 	\preshortmark\songnamemark
-	\renewcommand{\songurlmark}{#2}
+	\renewcommand{\songurlmark}{\href{https://#2}{#2}}
 	\preshortmark\songurlmark
 }
 
