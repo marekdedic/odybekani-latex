@@ -84,7 +84,15 @@ function print_song(number, title, author, url, body)
 					if chorusline == "" then
 						mode = 2
 					else
-						output = output .. chorusline .. "..."
+						for j = i + 1, #body do
+							local d = body:sub(j, j)
+							if d ~= " " then
+								if d == "\n" then
+									output = output .. chorusline .. "..."
+								end
+								break
+							end
+						end
 					end
 				else
 					output = output .. "\\songchord{" .. command .. "}"
