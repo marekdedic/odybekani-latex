@@ -15,8 +15,10 @@
 \usepackage{lmodern}
 \usepackage{eso-pic}
 \usepackage{calc}
-\usepackage{fancyhdr}
 \usepackage{textpos}
+\usepackage[extramarks]{titleps}
+\usepackage{array}
+\usepackage{booktabs}
 
 \pagestyle{empty}
 
@@ -39,8 +41,8 @@
 		\ifthenelse{\songmeasurebox>\textheight}{\null\clearpage\null}{\null}%
 	\fi
 	\thispagestyle{songstyle}
-	\leavevmode \\
 	\directlua{stoprecording()}
+	\songsetauthor{}
 }
 
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\strut\raisebox{1em}{\textbf{#1}}}\kern0.2em}
@@ -51,25 +53,47 @@
 \newcommand{\songchorus}{\songpart{R:}}
 \newcommand{\songchordkern}{\kern-\songchordlen\setlength{\songchordlen}{0em}}
 
-\fancypagestyle{songstyle}{\fancyhf{}\renewcommand{\headrulewidth}{1pt}\renewcommand{\footrulewidth}{1pt}
-	\fancyhead[C]{\rule[-1.5ex]{0pt}{1.5ex}\songnamefont\leftmark}
-	\fancyfoot[RE]{\songurlfont\rightmark}
-	\fancyfoot[LO]{\songurlfont\rightmark}
+\newcommand{\songnamemark}{}
+\newcommand{\songauthormark}{}
+\newcommand{\songurlmark}{}
+
+\newshortmark\songnamemark
+\newshortmark\songauthormark
+\newshortmark\songurlmark
+
+\newpagestyle{songstyle}{
+	%\headrule
+	\footrule
+	%\sethead[]
+		%[\songnamefont \topshortmark\songnamemark]
+		%[\songauthorfont \topshortmark\songauthormark]
+		%{\songauthorfont \topshortmark\songauthormark}
+		%{\songnamefont \topshortmark\songnamemark}
+		%{}
+
+	\sethead[]
+		[\begin{tabular}{@{}>{\raggedleft\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{c}{\centering \songnamefont \topshortmark\songnamemark} \\\midrule {\songauthorfont \topshortmark\songauthormark \hspace{0.5cm} \null}\end{tabular}]
+		[]{}
+		{\begin{tabular}{@{}>{\raggedright\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{c}{\songnamefont \topshortmark\songnamemark}\\\midrule {\hspace{0.5cm} \songauthorfont \topshortmark\songauthormark}\end{tabular}}
+		{}
+			\setfoot{}{\thepage}{}
+
+	\setfoot[\songurlfont \topshortmark\songurlmark]
+		[][]{}{}
+		{\songurlfont \topshortmark\songurlmark}
 }
 
-\newcommand{\songsettitleurl}[2]{\markboth{#1}{#2}}
+\newcommand{\songsettitleurl}[2]{
+	\renewcommand{\songnamemark}{#1}
+	\preshortmark\songnamemark
+	\renewcommand{\songurlmark}{#2}
+	\preshortmark\songurlmark
+}
 
 \newcommand{\songsetauthor}[1]{
-	\checkoddpage
-	\ifoddpage
-		\begin{textblock}{20}(5.5, -0.8)
-			\songauthorfont #1
-		\end{textblock}
-	\else
-		\begin{textblock}{20}(0, -0.7)
-			\songauthorfont #1
-		\end{textblock}
-	\fi \vspace{-2em} \leavevmode \\
+	\renewcommand{\songauthormark}{#1}
+	\preshortmark\songauthormark
+	\leavevmode \\
 }
 
 \newcommand{\songtitlepage}{%
@@ -92,12 +116,14 @@
 
 % Page geometry
 \geometry{a5paper,twoside,top=70pt,bottom=50pt,inner=55pt,outer=55pt,headheight=25pt,headsep=20pt,footskip=20pt}
+\setlength{\parindent}{0pt}
 \newcommand{\addheaderimg}{
 	\AddToShipoutPictureBG{%
 		\put(-60,0){%
 			\parbox[b][\paperheight + 20pt]{\paperwidth + 120pt}{%
 				\checkoddpage
 				\ifoddpage
+				\else
 					\raggedleft
 				\fi
 				\includegraphics[width=120pt]{\songlogo}
