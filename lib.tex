@@ -1,5 +1,6 @@
 \documentclass[10pt]{extarticle}
-\directlua{require("lib_resources/script.lua")}
+\directlua{require("lib_resources/print_song.lua")}
+\directlua{require("lib_resources/print_los.lua")}
 
 \usepackage{geometry}
 \usepackage{polyglossia}
@@ -20,8 +21,6 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
-\usepackage{tocloft}
-
 
 \newpagestyle{songempty}{%
 	\footrule}
@@ -33,19 +32,19 @@
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
 
-\newcommand{\listsongname}{Obsah}
-\newlistof{song}{los}{\listsongname}
-\cftpagenumbersoff{song}
+\newcommand{\songlistentry}[2]{%
+	#2 \hfill #1 \\
+}
+
+\newcommand{\listofsongs}{%
+	\clearpage
+	\directlua{print_los("\jobname")}
+	}
 
 \newsavebox{\songbox}
 \newcommand\songmeasurebox{\dimexpr\ht\songbox+\dp\songbox\relax}
 
-\newcommand{\songentry}[2]{%
-	\refstepcounter{song}
-	\addcontentsline{los}{song}{\protect #1 \hfill #2}
-}
-
-\newenvironment{song}[4][]{\directlua{startrecording("#2", "#3", "#1", "#4")}\songentry{#3}{#2}}{%
+\newenvironment{song}[4][]{\directlua{startrecording("#2", "#3", "#1", "#4", "\jobname")}}{%
 	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{stoprecording()}\end{minipage}\end{lrbox}
 	\clearpage
 	\checkoddpage
