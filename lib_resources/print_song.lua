@@ -71,7 +71,7 @@ function print_song(number, title, author, url, body)
 						end
 					end
 				end
-				output = output .. c
+				output = output .. latexEscape(c)
 			end
 		elseif mode == 1 then -- inside a command
 			if c == ">" then
@@ -91,7 +91,11 @@ function print_song(number, title, author, url, body)
 					afterchord = true
 				end
 			else
-				command = command .. c
+				if c == "b" then
+					command = command .. "$\\boldsymbol{\\flat}$"
+				else
+					command = command .. latexEscape(c)
+				end
 			end
 		elseif mode == 2 then -- first occurence of chorus
 			if c == "<" then
@@ -117,8 +121,8 @@ function print_song(number, title, author, url, body)
 						end
 					end
 				end
-				chorusline = chorusline .. c
-				output = output .. c
+				chorusline = chorusline .. latexEscape(c)
+				output = output .. latexEscape(c)
 			end
 		elseif mode == 3 then -- first occurence of chorus, inside a command
 			if c == ">" then
@@ -126,11 +130,34 @@ function print_song(number, title, author, url, body)
 				output = output .. "\\songchord{" .. command .. "}"
 				afterchord = true
 			else
-				command = command .. c
+				if c == "b" then
+					command = command .. "$\\boldsymbol{\\flat}$"
+				else
+					command = command .. latexEscape(c)
+				end
 			end
 		end
 	end
 	tex.print(output)
+end
+
+function latexEscape(c)
+	local esc = {
+		["%"] = "\\%",
+		["$"] = "\\$",
+		["{"] = "\\{",
+		["_"] = "\\_",
+		["#"] = "\\#",
+		["&"] = "\\&",
+		["}"] = "\\}",
+		["~"] = "\\~{}",
+	}
+	local t = esc[c]
+	if t then
+		return t
+	else
+		return c
+	end
 end
 
 function trim(s)
