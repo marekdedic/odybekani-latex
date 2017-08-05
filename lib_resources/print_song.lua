@@ -71,7 +71,18 @@ function print_song(number, title, author, url, body)
 						end
 					end
 				end
-				output = output .. latexEscape(c)
+				if c == "|" then
+					if body:sub(i + 1, i + 1) == ":" then
+						output = output .. "\\songrepeatstart"
+					elseif body:sub(i - 1, i - 1) == ":" then
+						output = output .. "\\songrepeatend"
+					else
+						output = output .. "|"
+					end
+				elseif c == ":" and (body:sub(i + 1, i + 1) == "|" or body:sub(i - 1, i - 1) == "|") then
+				else
+					output = output .. latexEscape(c)
+				end
 			end
 		elseif mode == 1 then -- inside a command
 			if c == ">" then
@@ -129,8 +140,20 @@ function print_song(number, title, author, url, body)
 						end
 					end
 				end
-				chorusline = chorusline .. latexEscape(c)
-				output = output .. latexEscape(c)
+				if c == "|" then
+					if body:sub(i + 1, i + 1) == ":" then
+						output = output .. "\\songrepeatstart"
+					elseif body:sub(i - 1, i - 1) == ":" then
+						output = output .. "\\songrepeatend"
+					else
+						chorusline = chorusline .. "|"
+						output = output .. "|"
+					end
+				elseif c == ":" and (body:sub(i + 1, i + 1) == "|" or body:sub(i - 1, i - 1) == "|") then
+				else
+					chorusline = chorusline .. latexEscape(c)
+					output = output .. latexEscape(c)
+				end
 			end
 		elseif mode == 3 then -- first occurence of chorus, inside a command
 			if c == ">" then
