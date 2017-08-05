@@ -24,9 +24,11 @@
 \usepackage{multicol}
 \usepackage{bm}
 
+\geometry{a5paper,twoside,top=90pt,bottom=50pt,inner=55pt,outer=55pt,headheight=25pt,headsep=30pt,footskip=20pt}
+
 \newpagestyle{songempty}{%
-	\sethead[][][]{\vspace{3em}}{}{}
-	\footrule}
+	\footrule
+}
 \pagestyle{songempty}
 
 \strictpagecheck
@@ -143,8 +145,6 @@
 	\addheaderimg
 }
 
-% Page geometry
-\geometry{a5paper,twoside,top=70pt,bottom=50pt,inner=55pt,outer=55pt,headheight=25pt,headsep=20pt,footskip=20pt}
 \setlength{\parindent}{0pt}
 \newcommand{\addheaderimg}{
 	\AddToShipoutPictureBG{%
