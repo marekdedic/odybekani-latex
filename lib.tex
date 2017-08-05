@@ -49,7 +49,7 @@
 }
 
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\strut\raisebox{1em}{\textbf{#1}}}\kern0.2em}
-\newcommand{\songpart}[1]{\llap{\textcolor{songpartcolor}{\raisebox{-0.4em}[0em][0em]{\textbf{\songpartfont \huge #1}}\kern0.4em}}}
+\newcommand{\songpart}[1]{\llap{\textcolor{songpartcolor} {\raisebox{-0.4em}[0em][0em]{\makebox[2.4em]{\songpartfont \raggedright \huge \textbf{#1}}}}}}
 
 \newcommand{\songchord}[1]{\settowidth{\songchordtmp}{\songchordbox{#1}}\addtolength{\songchordlen}{\songchordtmp}\songchordbox{#1}}
 \newcommand{\songverse}[1]{\songpart{#1.}\kern-0.05em}
