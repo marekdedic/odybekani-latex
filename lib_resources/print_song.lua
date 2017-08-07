@@ -95,6 +95,9 @@ function print_song(number, title, author, url, body)
 					if chorusline == "" then
 						mode = 2
 					else
+						if i + 1 >= #body then
+							output = output .. chorusline .. "..."
+						end
 						for j = i + 1, #body do
 							local d = body:sub(j, j)
 							if d ~= " " then
