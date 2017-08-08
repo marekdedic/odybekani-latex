@@ -58,12 +58,11 @@
 
 \newcommand{\listofsongs}[1][1]{%
 	\clearpage
-	\null
-	\vfill
+	\newgeometry{a5paper,twoside,top=50pt,bottom=50pt,inner=70pt,outer=55pt,headheight=25pt,headsep=25pt,footskip=20pt}
 	\begin{multicols}{#1}
 		\directlua{print_los("\jobname")}
 	\end{multicols}
-	\vfill
+	\restoregeometry
 	}
 
 \newsavebox{\songbox}
