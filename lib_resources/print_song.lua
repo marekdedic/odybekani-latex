@@ -145,7 +145,10 @@ function print_song(number, title, author, url, body)
 					output = output .. "\\songchordkern{}"
 					afterchord = false
 				end
-				output = output .. " \\\\ \n"
+				output = output .. " \\\\\n"
+				if body:sub(i + 1, i + 1) ~= "\n" then
+					output = output .. "\\nopagebreak[4]"
+				end
 			else
 				if afterchord then
 					for j = i, #body do
@@ -201,6 +204,7 @@ function latexEscape(c)
 		["&"] = "\\&",
 		["}"] = "\\}",
 		["~"] = "\\~{}",
+		--["\"] = "\\\\",
 	}
 	local t = esc[c]
 	if t then
