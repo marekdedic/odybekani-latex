@@ -52,12 +52,25 @@ function print_song(number, title, author, url, body)
 			if c == "<" then
 				mode = 1
 				command = ""
-			elseif c =="\n" then
+			elseif c == "\n" then
 				if afterchord then
 					output = output .. "\\songchordkern{}"
 					afterchord = false
 				end
-				output = output .. " \\\\ \n"
+				output = output .. "\\\\\n"
+				if body:sub(i + 1, i + 1) ~= "\n" then
+					output = output .. "\\nopagebreak[4]"
+				end
+			elseif c == " " or c == "\t" then
+				for j = i, 0, -1 do
+					local d = body:sub(j, j)
+					if d ~= " " and d ~= "\t" then
+						if d ~= "\n" then
+							output = output .. " "
+						end
+						break
+					end
+				end
 			else
 				if afterchord then
 					for j = i, #body do
@@ -73,9 +86,9 @@ function print_song(number, title, author, url, body)
 				end
 				if c == "|" then
 					if body:sub(i + 1, i + 1) == ":" then
-						output = output .. "\\songrepeatstart"
+						output = output .. "\\songrepeatstart{}"
 					elseif body:sub(i - 1, i - 1) == ":" then
-						output = output .. "\\songrepeatend"
+						output = output .. "\\songrepeatend{}"
 					else
 						output = output .. "|"
 					end
