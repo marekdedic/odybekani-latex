@@ -116,6 +116,9 @@ function print_song(number, title, author, url, body)
 							if d ~= " " then
 								if d == "\n" then
 									output = output .. chorusline .. "..."
+								else
+									chorusline = ""
+									mode = 2
 								end
 								break
 							end
