@@ -13,6 +13,7 @@ function print_los(jobname)
 			output = output .. "\\songlistentry{" .. lines[name] .. "}{" .. name .. "}\n"
 		end
 		los = io.open(jobname .. ".los", "w")
+		output = trim(output)
 		tex.print(output)
 	end
 end
