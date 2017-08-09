@@ -23,6 +23,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{multicol}
 \usepackage{bm}
+\usepackage{setspace}
 
 \geometry{a5paper,twoside,top=80pt,bottom=50pt,inner=70pt,outer=55pt,headheight=25pt,headsep=25pt,footskip=20pt}
 
@@ -102,7 +103,7 @@
 \newpagestyle{songstyle}{
 	\footrule
 	\sethead[]
-		[\begin{tabular}{@{}>{\raggedleft\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{c}{\centering \songnamefont \topshortmark\songnamemark} \\\midrule {\songauthorfont \topshortmark\songauthormark \hspace{0.5cm} \null}\end{tabular}]
+		[\begin{tabular}{@{}>{\raggedleft\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{p{25em}}{\centering \setstretch{2.0} \songnamefont \topshortmark\songnamemark} \\\midrule {\songauthorfont \topshortmark\songauthormark \hspace{0.5cm} \null}\end{tabular}]
 		[]{}
 		{\begin{tabular}{@{}>{\raggedright\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{c}{\songnamefont \topshortmark\songnamemark}\\\midrule {\hspace{0.5cm} \songauthorfont \topshortmark\songauthormark}\end{tabular}}
 		{}
