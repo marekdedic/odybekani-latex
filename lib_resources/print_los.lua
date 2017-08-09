@@ -44,15 +44,12 @@ function wordSort(first, second)
 				si = si + 1
 			end
 		end
-		print("\nC:" .. c .. " D:" .. d)
 		if c ~= d then
-			print ("\nRESULT: " .. (lexicographicSort(c, d) and "TRUE" or "FALSE"))
 			return lexicographicSort(c, d)
 		end
 		fi = fi + 1
 		si = si + 1
 	end
-	print ("\n LENGTH")
 	return #first < #second
 end
 
