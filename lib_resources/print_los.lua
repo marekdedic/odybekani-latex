@@ -10,7 +10,7 @@ function print_los(jobname)
 		for n in pairs(lines) do table.insert(sorted, n) end
 		table.sort(sorted, wordSort)
 		for _, name in ipairs(sorted) do
-			output = output .. "\\songlistentry{" .. lines[name] .. "}{" .. name .. "}\n"
+			output = output .. "\\songlistentry{" .. lines[name] .. "}{" .. name .. "}"
 		end
 		los = io.open(jobname .. ".los", "w")
 		output = trim(output)
