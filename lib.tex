@@ -24,6 +24,7 @@
 \usepackage{multicol}
 \usepackage{bm}
 \usepackage{setspace}
+\usepackage{dashrule}
 
 \geometry{a5paper,twoside,top=80pt,bottom=50pt,inner=70pt,outer=55pt,headheight=25pt,headsep=25pt,footskip=20pt}
 
@@ -40,6 +41,11 @@
 
 \newcommand{\songlistentry}[2]{%
 	#2 \hfill #1 \\
+}
+\newcommand{\songlistdivider}{%
+	\vspace{-22pt} \\
+	{ \color{lightgray} \hdashrule{1.01\textwidth}{0.5pt}{1pt 2pt} } \\
+	\vspace{-28pt} \\
 }
 
 \let\multicolmulticols\multicols
