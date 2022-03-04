@@ -9,7 +9,12 @@ function print_los(jobname)
 		sorted = {}
 		for n in pairs(lines) do table.insert(sorted, n) end
 		table.sort(sorted, wordSort)
+		local i = 0
 		for _, name in ipairs(sorted) do
+			if math.fmod(i, 5) == 0 and i > 0 then
+				output = output .. "\\songlistdivider"
+			end
+			i = i + 1
 			output = output .. "\\songlistentry{" .. lines[name] .. "}{" .. name .. "}"
 		end
 		los = io.open(jobname .. ".los", "w")
