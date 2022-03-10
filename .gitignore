@@ -377,5 +377,5 @@ tags
 # End of https://www.toptal.com/developers/gitignore/api/latex,lua,vim
 
 *.los
-songbook.pdf
+odybekani.pdf
 OdyBékání*.pdf
