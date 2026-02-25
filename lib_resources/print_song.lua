@@ -45,6 +45,7 @@ do
 		RECORDING = true
 		los = io.open(jobname .. ".los", "a")
 		los:write(number .. "|" .. title .. "\n")
+		los:close()
 	end
 
 	--[[
@@ -55,7 +56,7 @@ do
 			luatexbase.remove_from_callback('process_input_buffer', 'readbuf')
 		end
 		RECORDING = false
-		local clean_buffer = BUFFER:gsub("\\end{song}\n","")
+		local clean_buffer = BUFFER:gsub("\\end{song}\n*","")
 		print_song(NUMBER, TITLE, AUTHOR, URL, clean_buffer)
 	end
 end
@@ -76,9 +77,9 @@ end
 function print_song(number, title, author, url, body)
 	local mode = 0
 	local command = ""
-	local output = "\\songsettitleurl{" .. number .. ") " .. title .. "}{" .. url .. "}\n"
+	local output = "\\songsettitleurl{" .. number .. ") " .. title .. "}{" .. url .. "}"
 	if author ~= "" then
-		output = output .. "\\songsetauthor{" .. author .. "}\n"
+		output = output .. "\\songsetauthor{" .. author .. "}"
 	end
 	local verse_number = 0
 	local chorusline = ""
@@ -95,7 +96,7 @@ function print_song(number, title, author, url, body)
 					output = output .. "\\songchordkern{}"
 					afterchord = false
 				end
-				output = output .. "\\\\\n"
+				output = output .. "\\\\"
 				if body:sub(i + 1, i + 1) ~= "\n" then
 					output = output .. "\\nopagebreak[4]"
 				end
@@ -183,7 +184,7 @@ function print_song(number, title, author, url, body)
 					output = output .. "\\songchordkern{}"
 					afterchord = false
 				end
-				output = output .. " \\\\\n"
+				output = output .. " \\\\"
 				if body:sub(i + 1, i + 1) ~= "\n" then
 					output = output .. "\\nopagebreak[4]"
 				end
