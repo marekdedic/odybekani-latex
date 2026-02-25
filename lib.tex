@@ -190,8 +190,7 @@
 	\AddToShipoutPictureBG{%
 		\put(-60,0){%
 			\parbox[b][\paperheight + 20pt]{\paperwidth + 120pt}{%
-				\checkoddpage
-				\ifoddpage
+				\ifodd\value{page}
 				\else
 					\raggedleft
 				\fi
