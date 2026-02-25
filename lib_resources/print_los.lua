@@ -1,3 +1,13 @@
+--==============================================================================
+-- List of Songs (LOS) Module
+-- Generates sorted table of contents from .los file with Czech alphabet sorting.
+-- "ch" is treated as a single letter between "h" and "i".
+--==============================================================================
+
+--[[
+	Main function - reads .los file, sorts songs by title, prints list entries.
+	@param jobname string: LaTeX job name for .los file
+]]
 function print_los(jobname)
 	if io.open(jobname .. ".los", "r") ~= nil then
 		local output = ""
@@ -23,6 +33,63 @@ function print_los(jobname)
 	end
 end
 
+--==============================================================================
+-- Czech Alphabet Sorting
+--==============================================================================
+
+-- Czech alphabet with accented characters, "ch" treated as single letter
+local CZECH_ALPHABET = {
+	["a"] = 0,
+	["á"] = 1,
+	["b"] = 2,
+	["c"] = 3,
+	["č"] = 4,
+	["d"] = 5,
+	["ď"] = 6,
+	["e"] = 7,
+	["é"] = 8,
+	["ě"] = 9,
+	["f"] = 10,
+	["g"] = 11,
+	["h"] = 12,
+	["ch"] = 13,
+	["i"] = 14,
+	["í"] = 15,
+	["j"] = 16,
+	["k"] = 17,
+	["l"] = 18,
+	["m"] = 19,
+	["n"] = 20,
+	["ň"] = 21,
+	["o"] = 22,
+	["ó"] = 23,
+	["p"] = 24,
+	["q"] = 25,
+	["r"] = 26,
+	["ř"] = 27,
+	["s"] = 28,
+	["š"] = 29,
+	["t"] = 30,
+	["ť"] = 31,
+	["u"] = 32,
+	["ú"] = 33,
+	["ů"] = 34,
+	["v"] = 35,
+	["w"] = 36,
+	["x"] = 37,
+	["y"] = 38,
+	["ý"] = 39,
+	["z"] = 40,
+	["ž"] = 41,
+}
+
+--[[
+	Comparison function for sorting - handles Czech alphabet.
+	Treats "ch" as a single letter between "h" and "i".
+	@param first string: First string to compare
+	@param second string: Second string to compare
+	returns: boolean: true if first < second
+]]
 function wordSort(first, second)
 	if #first == 0 then
 		return true
@@ -58,62 +125,33 @@ function wordSort(first, second)
 	return #first < #second
 end
 
+--[[
+	Lexicographic comparison using Czech alphabet order.
+	@param first string: First character
+	@param second string: Second character
+	returns: boolean: true if first < second in Czech order
+]]
 function lexicographicSort(first, second)
-	local letters = {
-		["a"] = 0,
-		["á"] = 1,
-		["b"] = 2,
-		["c"] = 3,
-		["č"] = 4,
-		["d"] = 5,
-		["ď"] = 6,
-		["e"] = 7,
-		["é"] = 8,
-		["ě"] = 9,
-		["f"] = 10,
-		["g"] = 11,
-		["h"] = 12,
-		["ch"] = 13,
-		["i"] = 14,
-		["í"] = 15,
-		["j"] = 16,
-		["k"] = 17,
-		["l"] = 18,
-		["m"] = 19,
-		["n"] = 20,
-		["ň"] = 21,
-		["o"] = 22,
-		["ó"] = 23,
-		["p"] = 24,
-		["q"] = 25,
-		["r"] = 26,
-		["ř"] = 27,
-		["s"] = 28,
-		["š"] = 29,
-		["t"] = 30,
-		["ť"] = 31,
-		["u"] = 32,
-		["ú"] = 33,
-		["ů"] = 34,
-		["v"] = 35,
-		["w"] = 36,
-		["x"] = 37,
-		["y"] = 38,
-		["ý"] = 39,
-		["z"] = 40,
-		["ž"] = 41,
-	}
 	a = czechLower(first)
 	b = czechLower(second)
-	if letters[a] == nil then
+	if CZECH_ALPHABET[a] == nil then
 		return false
 	end
-	if letters[b] == nil then
+	if CZECH_ALPHABET[b] == nil then
 		return true
 	end
-	return letters[a] < letters[b]
+	return CZECH_ALPHABET[a] < CZECH_ALPHABET[b]
 end
 
+--==============================================================================
+-- Utility Functions
+--==============================================================================
+
+--[[
+	Gets the byte size of a UTF-8 character.
+	@param char number: First byte of UTF-8 character
+	returns: number: byte length (1-4)
+]]
 function chsize(char)
 	if not char then
 		return 0
@@ -128,6 +166,13 @@ function chsize(char)
 	end
 end
 
+--[[
+	Extracts a substring from a UTF-8 string.
+	@param str string: Input UTF-8 string
+	@param startChar number: 1-based starting character position
+	@param numChars number: Number of characters to extract
+	returns: string: substring
+]]
 function utf8sub(str, startChar, numChars)
 	local startIndex = 1
 	while startChar > 1 do
@@ -146,6 +191,11 @@ function utf8sub(str, startChar, numChars)
 	return str:sub(startIndex, currentIndex - 1)
 end
 
+--[[
+	Converts string to lowercase with Czech-specific handling.
+	@param str string: Input string
+	returns: string: lowercased string
+]]
 function czechLower(str)
 	local substitutions = {
 		["Á"] = "á",
@@ -174,4 +224,13 @@ function czechLower(str)
 		end
 	end
 	return output
+end
+
+--[[
+	Trims leading and trailing whitespace from string.
+	@param s string: Input string
+	returns: string: trimmed string
+]]
+function trim(s)
+	return (s:gsub("^%s*(.-)%s*$", "%1"))
 end

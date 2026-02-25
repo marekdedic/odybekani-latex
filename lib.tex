@@ -1,3 +1,6 @@
+%==============================================================================
+% PREAMBLE & PACKAGES
+%==============================================================================
 \documentclass[10pt]{extarticle}
 \directlua{require("lib_resources/print_song.lua")}
 \directlua{require("lib_resources/print_los.lua")}
@@ -28,6 +31,9 @@
 
 \geometry{a5paper,twoside,top=80pt,bottom=50pt,inner=70pt,outer=55pt,headheight=25pt,headsep=25pt,footskip=20pt}
 
+%==============================================================================
+% PAGE STYLES
+%==============================================================================
 \newpagestyle{songempty}{%
 	\footrule
 }
@@ -36,6 +42,9 @@
 \strictpagecheck
 \setmainlanguage{czech}
 
+%==============================================================================
+% SONG LIST FORMATTING
+%==============================================================================
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
 
@@ -63,6 +72,9 @@
 	\fi
 }
 
+%==============================================================================
+% LIST OF SONGS PAGE
+%==============================================================================
 \newpagestyle{losstyle}{
 	\footrule
 	\setfoot[\songurlfont \songversion]
@@ -80,6 +92,9 @@
 	\restoregeometry
 	}
 
+%==============================================================================
+% SONG ENVIRONMENT
+%==============================================================================
 \newsavebox{\songbox}
 \newcommand\songmeasurebox{\dimexpr\ht\songbox+\dp\songbox\relax}
 
@@ -96,6 +111,9 @@
 	\preshortmark\songauthormark
 }
 
+%==============================================================================
+% SONG FORMATTING COMMANDS
+%==============================================================================
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\rule{0pt}{2.2em}\raisebox{1em}{\textbf{#1}}}\kern0.2em}
 \newcommand{\songpart}[1]{\llap{\textcolor{songpartcolor} {\raisebox{-0.4em}[0em][0em]{\makebox[2.4em]{\songpartfont \raggedright \huge \textbf{#1}}}}}}
 
@@ -106,6 +124,9 @@
 \newcommand{\songrepeatstart}{\textbf{[:} }
 \newcommand{\songrepeatend}{ \textbf{:]}}
 
+%==============================================================================
+% SONG MARKS & PAGE STYLE
+%==============================================================================
 \newcommand{\songnamemark}{}
 \newcommand{\songauthormark}{}
 \newcommand{\songurlmark}{}
@@ -127,6 +148,9 @@
 		{\songurlfont \topshortmark\songurlmark}
 }
 
+%==============================================================================
+% SONG METADATA COMMANDS
+%==============================================================================
 \newcommand{\songsettitleurl}[2]{
 	\renewcommand{\songnamemark}{#1}
 	\preshortmark\songnamemark
@@ -140,6 +164,9 @@
 	\leavevmode \\
 }
 
+%==============================================================================
+% TITLE PAGE & HEADER IMAGES
+%==============================================================================
 \newcommand{\songtitlepage}{%
 	\begin{titlepage}
 		\centering
@@ -163,8 +190,7 @@
 	\AddToShipoutPictureBG{%
 		\put(-60,0){%
 			\parbox[b][\paperheight + 20pt]{\paperwidth + 120pt}{%
-				\checkoddpage
-				\ifoddpage
+				\ifodd\value{page}
 				\else
 					\raggedleft
 				\fi
@@ -175,4 +201,7 @@
 	}
 }
 
+%==============================================================================
+% TEMPLATE CONFIGURATION
+%==============================================================================
 \input{template.tex}
