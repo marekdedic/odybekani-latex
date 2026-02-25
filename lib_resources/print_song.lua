@@ -1,10 +1,24 @@
+--==============================================================================
+-- Song Processing Module
+-- Processes song content from LaTeX environment, parses custom markup tags
+-- (<v>, <ch>, <r>), converts to LaTeX commands, and writes to .los file
+--==============================================================================
+
 do 
+	-- Module-level state
 	local BUFFER = ""
 	local NUMBER = ""
 	local TITLE = ""
 	local AUTHOR = ""
 	local URL = ""
 	local RECORDING = false
+
+	--[[
+		Input buffer callback that accumulates song content.
+		Returns empty string to suppress default output.
+		@param buffer string: LaTeX input buffer chunk
+		returns: string: empty string to suppress output
+	]]
 	function readbuf(buffer)
 		BUFFER = BUFFER .. buffer .. "\n" 
 		if buffer:match("%s*\\end{song}") then 
@@ -13,6 +27,14 @@ do
 		return ""
 	end
 
+	--[[
+		Initializes song recording, sets up callback and writes to .los file.
+		@param number string: Song number
+		@param title string: Song title
+		@param author string: Song artist/author
+		@param url string: Song URL
+		@param jobname string: LaTeX job name for .los file
+	]]
 	function startrecording(number, title, author, url, jobname)
 		NUMBER = number
 		TITLE = title
@@ -25,6 +47,9 @@ do
 		los:write(number .. "|" .. title .. "\n")
 	end
 
+	--[[
+		Stops song recording, removes callback and processes the accumulated buffer.
+	]]
 	function stoprecording()
 		if RECORDING then
 			luatexbase.remove_from_callback('process_input_buffer', 'readbuf')
@@ -35,6 +60,19 @@ do
 	end
 end
 
+--[[
+	Main song printing function - parses song body and converts to LaTeX.
+	Handles:
+	- <v> or <s>: verse markers (numbered automatically)
+	- <ch> or <r>: chorus markers
+	- <Am>, <C>, etc.: chord annotations
+	- |: |: and :|: repeat markers
+	@param number string: Song number
+	@param title string: Song title  
+	@param author string: Song artist
+	@param url string: Song URL
+	@param body string: Raw song content from LaTeX environment
+]]
 function print_song(number, title, author, url, body)
 	local mode = 0
 	local command = ""
@@ -194,6 +232,11 @@ function print_song(number, title, author, url, body)
 	tex.print(output)
 end
 
+--[[
+	Escapes special LaTeX characters for safe output.
+	@param c string: Single character to escape
+	returns: string: escaped character or original
+]]
 function latexEscape(c)
 	local esc = {
 		["%"] = "\\%",
@@ -214,6 +257,11 @@ function latexEscape(c)
 	end
 end
 
+--[[
+	Trims leading and trailing whitespace from string.
+	@param s string: Input string
+	returns: string: trimmed string
+]]
 function trim(s)
 	return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
