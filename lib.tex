@@ -127,22 +127,24 @@
 % \songmeasurebox - Calculates total height of songbox (height + depth)
 \newcommand\songmeasurebox{\dimexpr\ht\songbox+\dp\songbox\relax}
 
-% \begin{song}{title}{author}[shorttitle]{tags} ... \end{song}
+% \begin{song}[author]{number}{title}{url} ... \end{song}
 % Main environment for typesetting a single song
-% Arguments: #1 = title, #2 = author, #3 = optional short title, #4 = tags
+% Arguments: #1 = author, #2 = number, #3 = title, #4 = url
 %
 % At begin: Initializes Lua recording with song metadata
 % At end: Captures rendered content, handles page breaks, applies song style
 \newenvironment{song}[4][]{%
-	\directlua{startrecording("#2", "#3", "#1", "#4", "\jobname")}}{%
-	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{stoprecording()}\end{minipage}\end{lrbox}
+	\directlua{startrecording("#2", "#3", "#1", "#4", "\jobname")}
+}{%
+	\directlua{stoprecording()}
+	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{print_song()}\end{minipage}\end{lrbox}
 	\clearpage
 	\checkoddpage
 	\ifoddpage
 		\ifthenelse{\songmeasurebox>\textheight}{\null\clearpage}{}
 	\fi
 	\thispagestyle{songstyle}
-	\directlua{stoprecording()}
+	\directlua{print_song()}
 	\renewcommand{\songauthormark}{}
 	\preshortmark\songauthormark
 }
