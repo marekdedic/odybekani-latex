@@ -4,7 +4,7 @@
 -- (<v>, <ch>, <r>), converts to LaTeX commands, and writes to .los file
 --==============================================================================
 
-do 
+do
 	-- Module-level state
 	local BUFFER = ""
 	local NUMBER = ""
@@ -20,8 +20,8 @@ do
 		returns: string: empty string to suppress output
 	]]
 	function readbuf(buffer)
-		BUFFER = BUFFER .. buffer .. "\n" 
-		if buffer:match("%s*\\end{song}") then 
+		BUFFER = BUFFER .. buffer .. "\n"
+		if buffer:match("%s*\\end{song}") then
 			return buffer
 		end
 		return ""
@@ -69,7 +69,7 @@ end
 	- <Am>, <C>, etc.: chord annotations
 	- |: |: and :|: repeat markers
 	@param number string: Song number
-	@param title string: Song title  
+	@param title string: Song title
 	@param author string: Song artist
 	@param url string: Song URL
 	@param body string: Raw song content from LaTeX environment
