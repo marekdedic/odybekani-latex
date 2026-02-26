@@ -1,6 +1,12 @@
 %==============================================================================
-% PREAMBLE & PACKAGES
+% LIB.TEX - LaTeX Library for Songbook
+% Contains all custom commands, environments, and formatting for songs
 %==============================================================================
+
+%------------------------------------------------------------------------------
+% PREAMBLE & PACKAGES
+%------------------------------------------------------------------------------
+
 \documentclass[10pt]{extarticle}
 \directlua{require("lib_resources/print_song.lua")}
 \directlua{require("lib_resources/print_los.lua")}
@@ -31,32 +37,45 @@
 
 \geometry{a5paper,twoside,top=80pt,bottom=50pt,inner=70pt,outer=55pt,headheight=25pt,headsep=25pt,footskip=20pt}
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % PAGE STYLES
-%==============================================================================
+%------------------------------------------------------------------------------
+
+% Defines a minimal page style with only a footer rule (no headers)
+% Used for title pages and other special pages
 \newpagestyle{songempty}{%
 	\footrule
 }
 \pagestyle{songempty}
 
+% Enables strict odd/even page checking for reliable \ifoddpage tests
 \strictpagecheck
 \setmainlanguage{czech}
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % SONG LIST FORMATTING
-%==============================================================================
+%------------------------------------------------------------------------------
+
+% Length registers for calculating chord width accumulation across lines
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
 
+% \songlistentry{artist}{title} - Formats a single entry in the song list
+% Renders as: title ......................... artist
 \newcommand{\songlistentry}[2]{%
 	#2 \hfill #1 \\
 }
+
+% \songlistdivider - Draws a dashed line separator between song entries
+% Uses negative vspace to compress the visual gap
 \newcommand{\songlistdivider}{%
 	\vspace{-20pt} \\
 	{ \color{darkgray} \hdashrule{1.01\textwidth}{1pt}{1pt 2pt} } \\
 	\vspace{-26pt} \\
 }
 
+% Custom multicols environment that gracefully handles single-column layout
+% When columns=1, bypasses the multicols environment entirely to avoid overhead
 \let\multicolmulticols\multicols
 \let\endmulticolmulticols\endmulticols
 \RenewDocumentEnvironment{multicols}{mO{}}{%
@@ -72,9 +91,12 @@
 	\fi
 }
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % LIST OF SONGS PAGE
-%==============================================================================
+%------------------------------------------------------------------------------
+
+% Page style for the List of Songs (table of contents)
+% Displays version number in footer, centered on odd pages, right on even
 \newpagestyle{losstyle}{
 	\footrule
 	\setfoot[\songurlfont \songversion]
@@ -82,6 +104,9 @@
 		{\songurlfont \songversion}
 }
 
+% \listofsongs[columns] - Generates the index/table of contents page
+% Optional argument: number of columns (default: 1)
+% Uses Lua script to generate formatted list of all songs
 \newcommand{\listofsongs}[1][1]{%
 	\clearpage
 	\newgeometry{a5paper,twoside,top=50pt,bottom=50pt,inner=70pt,outer=55pt,headheight=25pt,headsep=25pt,footskip=20pt}
@@ -90,15 +115,26 @@
 	\end{multicols}
 	\thispagestyle{losstyle}
 	\restoregeometry
-	}
+}
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % SONG ENVIRONMENT
-%==============================================================================
+%------------------------------------------------------------------------------
+
+% Storage box for measuring rendered song content height
 \newsavebox{\songbox}
+
+% \songmeasurebox - Calculates total height of songbox (height + depth)
 \newcommand\songmeasurebox{\dimexpr\ht\songbox+\dp\songbox\relax}
 
-\newenvironment{song}[4][]{\directlua{startrecording("#2", "#3", "#1", "#4", "\jobname")}}{%
+% \begin{song}{title}{author}[shorttitle]{tags} ... \end{song}
+% Main environment for typesetting a single song
+% Arguments: #1 = title, #2 = author, #3 = optional short title, #4 = tags
+%
+% At begin: Initializes Lua recording with song metadata
+% At end: Captures rendered content, handles page breaks, applies song style
+\newenvironment{song}[4][]{%
+	\directlua{startrecording("#2", "#3", "#1", "#4", "\jobname")}}{%
 	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{stoprecording()}\end{minipage}\end{lrbox}
 	\clearpage
 	\checkoddpage
@@ -111,30 +147,51 @@
 	\preshortmark\songauthormark
 }
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % SONG FORMATTING COMMANDS
-%==============================================================================
+%------------------------------------------------------------------------------
+
+% \songchordbox{chord} - Creates box for chord symbols above text line
+% Places chord with spacing to avoid overlapping lyrics
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\rule{0pt}{2.2em}\raisebox{1em}{\textbf{#1}}}\kern0.2em}
 \newcommand{\songpart}[1]{\llap{\textcolor{songpartcolor} {\raisebox{-0.4em}[0em][0em]{\makebox[2.4em]{\songpartfont \raggedright \huge \textbf{#1}}}}}}
 
+% \songchord{chord} - Renders a chord above the current text position
+% Accumulates chord width for proper alignment across the line
 \newcommand{\songchord}[1]{\settowidth{\songchordtmp}{\songchordbox{#1}}\addtolength{\songchordlen}{\songchordtmp}\songchordbox{#1}}
+
+% \songverse{number} - Typesets verse marker (e.g., "1.", "2.")
 \newcommand{\songverse}[1]{\songpart{#1.}\kern-0.05em}
+
+% \songchorus - Typesets "R:" refrain/chorus marker in margin
 \newcommand{\songchorus}{\songpart{R:}}
+
+% \songchordkern - Resets chord length counter after line break
+% Prevents chord width accumulation across line breaks
 \newcommand{\songchordkern}{\kern-\songchordlen\setlength{\songchordlen}{0em}}
+
+% \songrepeatstart, \songrepeatend - Repeat markers "[:" and ":]"
 \newcommand{\songrepeatstart}{\textbf{[:} }
 \newcommand{\songrepeatend}{ \textbf{:]}}
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % SONG MARKS & PAGE STYLE
-%==============================================================================
+%------------------------------------------------------------------------------
+
+% Song metadata marks - hold current song's name, author, URL
+% Populated by \songsettitleurl and \songsetauthor, used in headers/footers
 \newcommand{\songnamemark}{}
 \newcommand{\songauthormark}{}
 \newcommand{\songurlmark}{}
 
+% Create short marks for running headers (condensed versions for page top)
 \newshortmark\songnamemark
 \newshortmark\songauthormark
 \newshortmark\songurlmark
 
+% Song page style - applied to all song pages
+% Header: song title (centered on odd, right on even), author below
+% Footer: URL on right side
 \newpagestyle{songstyle}{
 	\footrule
 	\sethead[]
@@ -148,25 +205,34 @@
 		{\songurlfont \topshortmark\songurlmark}
 }
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % SONG METADATA COMMANDS
-%==============================================================================
-\newcommand{\songsettitleurl}[2]{
+%------------------------------------------------------------------------------
+
+% \songsettitleurl{title}{url} - Sets song title and URL for headers
+% Arguments: #1 = song title, #2 = URL (stored but currently unused)
+\newcommand{\songsettitleurl}[2]{%
 	\renewcommand{\songnamemark}{#1}
 	\preshortmark\songnamemark
 	%\renewcommand{\songurlmark}{\href{https://#2}{#2}}
 	\preshortmark\songurlmark
 }
 
-\newcommand{\songsetauthor}[1]{
+% \songsetauthor{author} - Sets song author/composer for headers
+% Also adds a line break after author in the song body
+\newcommand{\songsetauthor}[1]{%
 	\renewcommand{\songauthormark}{#1}
 	\preshortmark\songauthormark
 	\leavevmode \\
 }
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % TITLE PAGE & HEADER IMAGES
-%==============================================================================
+%------------------------------------------------------------------------------
+
+% \songtitlepage - Generates the songbook's title page
+% Uses template-defined fonts and logo, centers content vertically
+% Enables header images on all subsequent pages after title page
 \newcommand{\songtitlepage}{%
 	\begin{titlepage}
 		\centering
@@ -185,7 +251,12 @@
 	\addheaderimg
 }
 
+% Disables paragraph indentation throughout the document
 \setlength{\parindent}{0pt}
+
+% \addheaderimg - Adds the between-page logo to all subsequent pages
+% Places logo in outer margin (left on odd pages, right on even)
+% Uses eso-pic to add background image to each page after shipout
 \newcommand{\addheaderimg}{
 	\AddToShipoutPictureBG{%
 		\put(-60,0){%
@@ -201,7 +272,10 @@
 	}
 }
 
-%==============================================================================
+%------------------------------------------------------------------------------
 % TEMPLATE CONFIGURATION
-%==============================================================================
+%------------------------------------------------------------------------------
+
+% Loads template file for fonts, colors, and logo definitions
+% Must be last as it defines fonts used throughout the document
 \input{template.tex}
