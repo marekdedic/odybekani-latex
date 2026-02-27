@@ -159,16 +159,22 @@ do
 					command = ""
 				elseif c == "\n" then
 					mode = "lyrics"
-					output = output .. " \\\\"
+					output = output .. "\\\\"
 					if body:sub(i + 1, i + 1) ~= "\n" then
 						output = output .. "\\nopagebreak[4]"
 					end
+				elseif c == " " or c == "\t" then
+					if last_nonspace_char ~= "\n" then
+						chorusline = chorusline .. " "
+						output = output .. " "
+					end
 				else
+					last_nonspace_char = c
 					if c == "|" then
 						if body:sub(i + 1, i + 1) == ":" then
-							output = output .. "\\songrepeatstart"
+							output = output .. "\\songrepeatstart{}"
 						elseif body:sub(i - 1, i - 1) == ":" then
-							output = output .. "\\songrepeatend"
+							output = output .. "\\songrepeatend{}"
 						else
 							chorusline = chorusline .. "|"
 							output = output .. "|"
