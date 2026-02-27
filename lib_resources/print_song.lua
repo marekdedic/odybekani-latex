@@ -76,6 +76,7 @@ do
 		local verse_number = 0
 		local chorusline = ""
 		local afterchord = false
+		local last_nonspace_char = ""
 		body = trim(BUFFER:gsub("\\end{song}\n*",""))
 		for i = 1, #body do
 			local c = body:sub(i, i)
@@ -93,16 +94,11 @@ do
 						output = output .. "\\nopagebreak[4]"
 					end
 				elseif c == " " or c == "\t" then
-					for j = i, 0, -1 do
-						local d = body:sub(j, j)
-						if d ~= " " and d ~= "\t" then
-							if d ~= "\n" then
-								output = output .. " "
-							end
-							break
-						end
+					if last_nonspace_char ~= "\n" then
+						output = output .. " "
 					end
 				else
+					last_nonspace_char = c
 					if afterchord then
 						for j = i, #body do
 							local d = body:sub(j, j)
