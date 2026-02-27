@@ -19,7 +19,6 @@
 \usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage[abspage]{zref}
-\usepackage{changepage}
 \usepackage{ifthen}
 \usepackage{graphicx}
 \usepackage{lmodern}
@@ -48,8 +47,6 @@
 }
 \pagestyle{songempty}
 
-% Enables strict odd/even page checking for reliable \ifoddpage tests
-\strictpagecheck
 \setmainlanguage{czech}
 
 %------------------------------------------------------------------------------
@@ -139,8 +136,7 @@
 	\directlua{stoprecording()}
 	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{print_song()}\end{minipage}\end{lrbox}
 	\clearpage
-	\checkoddpage
-	\ifoddpage
+	\ifodd\value{page}
 		\ifthenelse{\songmeasurebox>\textheight}{\null\clearpage}{}
 	\fi
 	\thispagestyle{songstyle}

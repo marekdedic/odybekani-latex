@@ -94,8 +94,10 @@ do
 					in_command = true
 					command = ""
 				elseif c == "\n" then
-					output = output .. "\\\\"
 					capturing_chorusline = false
+					if body:sub(i - 1, i - 1) ~= "\n" then
+						output = output .. "\\\\"
+					end
 					if body:sub(i + 1, i + 1) ~= "\n" then
 						output = output .. "\\nopagebreak[4]"
 					end
@@ -122,7 +124,7 @@ do
 						verse_number = verse_number + 1
 						output = output .. "\\songverse{" .. verse_number .. "}"
 					elseif command == "ch" or command == "r" then
-						output = output .. "\\songchorus "
+						output = output .. "\\songchorus{}"
 						if chorusline == "" then
 							capturing_chorusline = true
 						else
