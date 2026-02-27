@@ -67,7 +67,7 @@ do
 		- |: |: and :|: repeat markers
 	]]
 	function print_song()
-		local mode = "lyrics"
+		local capturing_chorusline = false
 		local command = ""
 		local output = "\\songsettitleurl{" .. NUMBER .. ") " .. TITLE .. "}{" .. URL .. "}"
 		if AUTHOR ~= "" then
@@ -76,21 +76,29 @@ do
 		local verse_number = 0
 		local chorusline = ""
 		local last_nonspace_char = ""
+		local in_command = false
+		local function emit(x)
+			output = output .. x
+			if capturing_chorusline then
+				chorusline = chorusline .. x
+			end
+		end
 		body = trim(BUFFER:gsub("\\end{song}\n*",""))
 		for i = 1, #body do
 			local c = body:sub(i, i)
-			if mode == "lyrics" then
+			if not in_command then
 				if c == "<" then
-					mode = "command"
+					in_command = true
 					command = ""
 				elseif c == "\n" then
 					output = output .. "\\\\"
+					capturing_chorusline = false
 					if body:sub(i + 1, i + 1) ~= "\n" then
 						output = output .. "\\nopagebreak[4]"
 					end
 				elseif c == " " or c == "\t" then
 					if last_nonspace_char ~= "\n" then
-						output = output .. " "
+						emit(" ")
 					end
 				else
 					last_nonspace_char = c
@@ -100,23 +108,23 @@ do
 						elseif body:sub(i - 1, i - 1) == ":" then
 							output = output .. "\\songrepeatend{}"
 						else
-							output = output .. "|"
+							emit("|")
 						end
 					elseif c == ":" and (body:sub(i + 1, i + 1) == "|" or body:sub(i - 1, i - 1) == "|") then
 					else
-						output = output .. latexEscape(c)
+						emit(latexEscape(c))
 					end
 				end
-			elseif mode == "command" then
+			else
 				if c == ">" then
-					mode = "lyrics"
+					in_command = false
 					if command == "v" or command == "s" then
 						verse_number = verse_number + 1
 						output = output .. "\\songverse{" .. verse_number .. "}"
 					elseif command == "ch" or command == "r" then
 						output = output .. "\\songchorus "
 						if chorusline == "" then
-							mode = "first-chorus"
+							capturing_chorusline = true
 						else
 							if i + 1 >= #body then
 								output = output .. chorusline .. "..."
@@ -128,7 +136,7 @@ do
 										output = output .. chorusline .. "..."
 									else
 										chorusline = ""
-										mode = "first-chorus"
+										capturing_chorusline = true
 									end
 									break
 								end
@@ -144,58 +152,6 @@ do
 								end
 								break
 							end
-						end
-					end
-				else
-					if c == "b" then
-						command = command .. "$\\boldsymbol{\\flat}$"
-					else
-						command = command .. latexEscape(c)
-					end
-				end
-			elseif mode == "first-chorus" then
-				if c == "<" then
-					mode = "first-chorus-command"
-					command = ""
-				elseif c == "\n" then
-					mode = "lyrics"
-					output = output .. "\\\\"
-					if body:sub(i + 1, i + 1) ~= "\n" then
-						output = output .. "\\nopagebreak[4]"
-					end
-				elseif c == " " or c == "\t" then
-					if last_nonspace_char ~= "\n" then
-						chorusline = chorusline .. " "
-						output = output .. " "
-					end
-				else
-					last_nonspace_char = c
-					if c == "|" then
-						if body:sub(i + 1, i + 1) == ":" then
-							output = output .. "\\songrepeatstart{}"
-						elseif body:sub(i - 1, i - 1) == ":" then
-							output = output .. "\\songrepeatend{}"
-						else
-							chorusline = chorusline .. "|"
-							output = output .. "|"
-						end
-					elseif c == ":" and (body:sub(i + 1, i + 1) == "|" or body:sub(i - 1, i - 1) == "|") then
-					else
-						chorusline = chorusline .. latexEscape(c)
-						output = output .. latexEscape(c)
-					end
-				end
-			elseif mode == "first-chorus-command" then
-				if c == ">" then
-					mode = "first-chorus"
-					output = output .. "\\songchord{" .. command .. "}"
-					for j = i + 1, #body do
-						local d = body:sub(j, j)
-						if d ~= " " and d ~= "\t" then
-							if d ~= "<" then
-								output = output .. "\\songchordkern{}"
-							end
-							break
 						end
 					end
 				else
