@@ -86,6 +86,9 @@ do
 		body = trim(BUFFER:gsub("\\end{song}\n*",""))
 		for i = 1, #body do
 			local c = body:sub(i, i)
+			if c ~= " " and c ~= "\t" then
+				last_nonspace_char = c
+			end
 			if not in_command then
 				if c == "<" then
 					in_command = true
@@ -100,20 +103,17 @@ do
 					if last_nonspace_char ~= "\n" then
 						emit(" ")
 					end
-				else
-					last_nonspace_char = c
-					if c == "|" then
-						if body:sub(i + 1, i + 1) == ":" then
-							output = output .. "\\songrepeatstart{}"
-						elseif body:sub(i - 1, i - 1) == ":" then
-							output = output .. "\\songrepeatend{}"
-						else
-							emit("|")
-						end
-					elseif c == ":" and (body:sub(i + 1, i + 1) == "|" or body:sub(i - 1, i - 1) == "|") then
+				elseif c == "|" then
+					if body:sub(i + 1, i + 1) == ":" then
+						output = output .. "\\songrepeatstart{}"
+					elseif body:sub(i - 1, i - 1) == ":" then
+						output = output .. "\\songrepeatend{}"
 					else
-						emit(latexEscape(c))
+						emit("|")
 					end
+				elseif c == ":" and (body:sub(i + 1, i + 1) == "|" or body:sub(i - 1, i - 1) == "|") then
+				else
+					emit(latexEscape(c))
 				end
 			else
 				if c == ">" then
@@ -154,12 +154,10 @@ do
 							end
 						end
 					end
+				elseif c == "b" then
+					command = command .. "$\\boldsymbol{\\flat}$"
 				else
-					if c == "b" then
-						command = command .. "$\\boldsymbol{\\flat}$"
-					else
-						command = command .. latexEscape(c)
-					end
+					command = command .. latexEscape(c)
 				end
 			end
 		end
