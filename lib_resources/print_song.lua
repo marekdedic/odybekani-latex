@@ -75,7 +75,6 @@ do
 		end
 		local verse_number = 0
 		local chorusline = ""
-		local afterchord = false
 		local last_nonspace_char = ""
 		body = trim(BUFFER:gsub("\\end{song}\n*",""))
 		for i = 1, #body do
@@ -85,10 +84,6 @@ do
 					mode = "command"
 					command = ""
 				elseif c == "\n" then
-					if afterchord then
-						output = output .. "\\songchordkern{}"
-						afterchord = false
-					end
 					output = output .. "\\\\"
 					if body:sub(i + 1, i + 1) ~= "\n" then
 						output = output .. "\\nopagebreak[4]"
@@ -99,18 +94,6 @@ do
 					end
 				else
 					last_nonspace_char = c
-					if afterchord then
-						for j = i, #body do
-							local d = body:sub(j, j)
-							if d ~= " " then
-								if d ~= "<" then
-									output = output .. "\\songchordkern{}"
-									afterchord = false
-								end
-								break
-							end
-						end
-					end
 					if c == "|" then
 						if body:sub(i + 1, i + 1) == ":" then
 							output = output .. "\\songrepeatstart{}"
@@ -153,7 +136,15 @@ do
 						end
 					else
 						output = output .. "\\songchord{" .. command .. "}"
-						afterchord = true
+						for j = i + 1, #body do
+							local d = body:sub(j, j)
+							if d ~= " " and d ~= "\t" then
+								if d ~= "<" then
+									output = output .. "\\songchordkern{}"
+								end
+								break
+							end
+						end
 					end
 				else
 					if c == "b" then
@@ -168,27 +159,11 @@ do
 					command = ""
 				elseif c == "\n" then
 					mode = "lyrics"
-					if afterchord then
-						output = output .. "\\songchordkern{}"
-						afterchord = false
-					end
 					output = output .. " \\\\"
 					if body:sub(i + 1, i + 1) ~= "\n" then
 						output = output .. "\\nopagebreak[4]"
 					end
 				else
-					if afterchord then
-						for j = i, #body do
-							local d = body:sub(j, j)
-							if d ~= " " then
-								if d ~= "<" then
-									output = output .. "\\songchordkern{}"
-									afterchord = false
-								end
-								break
-							end
-						end
-					end
 					if c == "|" then
 						if body:sub(i + 1, i + 1) == ":" then
 							output = output .. "\\songrepeatstart"
@@ -208,7 +183,15 @@ do
 				if c == ">" then
 					mode = "first-chorus"
 					output = output .. "\\songchord{" .. command .. "}"
-					afterchord = true
+					for j = i + 1, #body do
+						local d = body:sub(j, j)
+						if d ~= " " and d ~= "\t" then
+							if d ~= "<" then
+								output = output .. "\\songchordkern{}"
+							end
+							break
+						end
+					end
 				else
 					if c == "b" then
 						command = command .. "$\\boldsymbol{\\flat}$"
