@@ -67,7 +67,7 @@ do
 		- |: |: and :|: repeat markers
 	]]
 	function print_song()
-		local mode = 0
+		local mode = "lyrics"
 		local command = ""
 		local output = "\\songsettitleurl{" .. NUMBER .. ") " .. TITLE .. "}{" .. URL .. "}"
 		if AUTHOR ~= "" then
@@ -79,9 +79,9 @@ do
 		body = trim(BUFFER:gsub("\\end{song}\n*",""))
 		for i = 1, #body do
 			local c = body:sub(i, i)
-			if mode == 0 then -- Normal lyrics
+			if mode == "lyrics" then
 				if c == "<" then
-					mode = 1
+					mode = "command"
 					command = ""
 				elseif c == "\n" then
 					if afterchord then
@@ -128,16 +128,16 @@ do
 						output = output .. latexEscape(c)
 					end
 				end
-			elseif mode == 1 then -- inside a command
+			elseif mode == "command" then
 				if c == ">" then
-					mode = 0
+					mode = "lyrics"
 					if command == "v" or command == "s" then
 						verse_number = verse_number + 1
 						output = output .. "\\songverse{" .. verse_number .. "}"
 					elseif command == "ch" or command == "r" then
 						output = output .. "\\songchorus "
 						if chorusline == "" then
-							mode = 2
+							mode = "first-chorus"
 						else
 							if i + 1 >= #body then
 								output = output .. chorusline .. "..."
@@ -149,7 +149,7 @@ do
 										output = output .. chorusline .. "..."
 									else
 										chorusline = ""
-										mode = 2
+										mode = "first-chorus"
 									end
 									break
 								end
@@ -166,12 +166,12 @@ do
 						command = command .. latexEscape(c)
 					end
 				end
-			elseif mode == 2 then -- first occurence of chorus
+			elseif mode == "first-chorus" then
 				if c == "<" then
-					mode = 3
+					mode = "first-chorus-command"
 					command = ""
 				elseif c == "\n" then
-					mode = 0
+					mode = "lyrics"
 					if afterchord then
 						output = output .. "\\songchordkern{}"
 						afterchord = false
@@ -208,9 +208,9 @@ do
 						output = output .. latexEscape(c)
 					end
 				end
-			elseif mode == 3 then -- first occurence of chorus, inside a command
+			elseif mode == "first-chorus-command" then
 				if c == ">" then
-					mode = 2
+					mode = "first-chorus"
 					output = output .. "\\songchord{" .. command .. "}"
 					afterchord = true
 				else
