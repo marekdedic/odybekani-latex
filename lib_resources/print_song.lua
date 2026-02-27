@@ -184,12 +184,7 @@ function latexEscape(c)
 		["~"] = "\\~{}",
 		--["\"] = "\\\\",
 	}
-	local t = esc[c]
-	if t then
-		return t
-	else
-		return c
-	end
+	return esc[c] or c
 end
 
 --[[
