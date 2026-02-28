@@ -84,6 +84,7 @@ do
 			end
 		end
 		body = trim(BUFFER:gsub("\\end{song}\n*",""))
+		output = output .. "\\songpart{"
 		for i = 1, #body do
 			local c = body:sub(i, i)
 			if c ~= " " and c ~= "\t" then
@@ -96,10 +97,11 @@ do
 				elseif c == "\n" then
 					capturing_chorusline = false
 					if body:sub(i - 1, i - 1) ~= "\n" then
-						output = output .. "\\\\"
-					end
-					if body:sub(i + 1, i + 1) ~= "\n" then
-						output = output .. "\\nopagebreak[4]"
+						if body:sub(i + 1, i + 1) ~= "\n" then
+							output = output .. "\\\\*"
+						else
+							output = output .. "}\\vspace{1em}\\\\\\songpart{"
+						end
 					end
 				elseif c == " " or c == "\t" then
 					if last_nonspace_char ~= "\n" then
@@ -163,6 +165,7 @@ do
 				end
 			end
 		end
+		output = output .. "}"
 		tex.print(output)
 	end
 end
