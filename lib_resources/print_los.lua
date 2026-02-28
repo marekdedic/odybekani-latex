@@ -38,7 +38,22 @@ end
 --==============================================================================
 
 -- Czech alphabet with accented characters, "ch" treated as single letter
+-- Non-letter characters sort before all letters (negative values, roughly in Unicode order)
 local CZECH_ALPHABET = {
+	[" "]  = -14, -- space
+	["!"]  = -13, -- exclamation mark
+	["\""] = -12, -- double quotation mark
+	["'"]  = -11, -- apostrophe
+	["("]  = -10, -- left parenthesis
+	[")"]  =  -9, -- right parenthesis
+	[","]  =  -8, -- comma
+	["-"]  =  -7, -- hyphen-minus
+	["."]  =  -6, -- full stop
+	["/"]  =  -5, -- slash
+	[":"]  =  -4, -- colon
+	[";"]  =  -3, -- semicolon
+	["?"]  =  -2, -- question mark
+	["´"]  =  -1, -- acute accent (U+00B4, used as apostrophe in some titles)
 	["a"] = 0,
 	["á"] = 1,
 	["b"] = 2,
