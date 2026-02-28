@@ -94,7 +94,7 @@
 
 % Page style for the List of Songs (table of contents)
 % Displays version number in footer, centered on odd pages, right on even
-\newpagestyle{losstyle}{
+\newpagestyle{losstyle}{%
 	\footrule
 	\setfoot[\songurlfont \songversion]
 		[][]{}{}
@@ -206,7 +206,7 @@
 % Song page style - applied to all song pages
 % Header: song title (centered on odd, right on even), author below
 % Footer: URL on right side
-\newpagestyle{songstyle}{
+\newpagestyle{songstyle}{%
 	\footrule
 	\sethead[]
 		[\begin{tabular}{@{}>{\raggedleft\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{p{25em}}{\centering \setstretch{2.0} \songnamefont \topshortmark\songnamemark} \\\midrule {\songauthorfont \topshortmark\songauthormark \hspace{0.5cm} \null}\end{tabular}]
@@ -271,7 +271,7 @@
 % \addheaderimg - Adds the between-page logo to all subsequent pages
 % Places logo in outer margin (left on odd pages, right on even)
 % Uses eso-pic to add background image to each page after shipout
-\newcommand{\addheaderimg}{
+\newcommand{\addheaderimg}{%
 	\AddToShipoutPictureBG{%
 		\put(-60,0){%
 			\parbox[b][\paperheight + 20pt]{\paperwidth + 120pt}{%
