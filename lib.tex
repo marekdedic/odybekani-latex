@@ -152,17 +152,33 @@
 % \songchordbox{chord} - Creates box for chord symbols above text line
 % Places chord with spacing to avoid overlapping lyrics
 \newcommand{\songchordbox}[1]{\makebox[\width][l]{\rule{0pt}{2.2em}\raisebox{1em}{\textbf{#1}}}\kern0.2em}
-\newcommand{\songpart}[1]{\llap{\textcolor{songpartcolor} {\raisebox{-0.4em}[0em][0em]{\makebox[2.4em]{\songpartfont \raggedright \huge \textbf{#1}}}}}}
+
+\newcommand{\songpart}[1]{%
+	\begin{samepage}#1\end{samepage}
+}
+
+\newcommand{\songpartmarker}[1]{%
+	\noindent%
+	\makebox[0pt][r]{%
+		\raisebox{-0.15em}{%
+			\textcolor{songpartmarkercolor}{%
+				\songpartmarkerfont \huge \textbf{#1}%
+			}
+		}
+		\hspace*{0.5em}
+	}%
+	\ignorespaces
+}
 
 % \songchord{chord} - Renders a chord above the current text position
 % Accumulates chord width for proper alignment across the line
 \newcommand{\songchord}[1]{\settowidth{\songchordtmp}{\songchordbox{#1}}\addtolength{\songchordlen}{\songchordtmp}\songchordbox{#1}}
 
 % \songverse{number} - Typesets verse marker (e.g., "1.", "2.")
-\newcommand{\songverse}[1]{\songpart{#1.}\kern-0.05em}
+\newcommand{\songverse}[1]{\songpartmarker{#1.}\kern-0.05em}
 
 % \songchorus - Typesets "R:" refrain/chorus marker in margin
-\newcommand{\songchorus}{\songpart{R:}}
+\newcommand{\songchorus}{\songpartmarker{R:}}
 
 % \songchordkern - Resets chord length counter after line break
 % Prevents chord width accumulation across line breaks
