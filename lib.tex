@@ -209,9 +209,22 @@
 \newpagestyle{songstyle}{%
 	\footrule
 	\sethead[]
-		[\begin{tabular}{@{}>{\raggedleft\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{p{25em}}{\centering \setstretch{2.0} \songnamefont \topshortmark\songnamemark} \\\midrule {\songauthorfont \topshortmark\songauthormark \hspace{0.5cm} \null}\end{tabular}]
-		[]{}
-		{\begin{tabular}{@{}>{\raggedright\small\arraybackslash}p{\textwidth}@{}}\multicolumn{1}{c}{\songnamefont \topshortmark\songnamemark}\\\midrule {\hspace{0.5cm} \songauthorfont \topshortmark\songauthormark}\end{tabular}}
+		[
+			\parbox{\textwidth}{%
+				\centering \songnamefont \topshortmark\songnamemark \\[-2pt]
+				\rule{\textwidth}{0.6pt} \\
+				\raggedleft \songauthorfont \topshortmark\songauthormark \hspace*{3em}
+			}
+		]
+		[]
+		{}
+		{%
+			\parbox{\textwidth}{%
+				\centering \songnamefont \topshortmark\songnamemark \\[-2pt]
+				\rule{\textwidth}{0.6pt} \\
+				\raggedright \songauthorfont \hspace*{3em} \topshortmark\songauthormark
+			}
+		}
 		{}
 
 	\setfoot[\songurlfont \topshortmark\songurlmark]
