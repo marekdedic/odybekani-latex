@@ -150,7 +150,7 @@
 
 % \songchordbox{chord} - Creates box for chord symbols above text line
 % Places chord with spacing to avoid overlapping lyrics
-\newcommand{\songchordbox}[1]{\makebox[\width][l]{\rule{0pt}{2.2em}\raisebox{1em}{\textbf{#1}}}\kern0.2em}
+\newcommand{\songchordbox}[1]{\makebox[\width][l]{\rule{0pt}{2.2em}\raisebox{1em}{\textcolor{songchordcolor}{\textbf{#1}}}}\kern0.2em}
 
 \newcommand{\songpart}[1]{%
 	\begin{samepage}#1\end{samepage}
