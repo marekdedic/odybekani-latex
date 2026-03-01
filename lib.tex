@@ -36,17 +36,6 @@
 
 \geometry{a5paper,twoside,top=60pt,bottom=40pt,inner=70pt,outer=55pt,headheight=26pt,headsep=14pt,footskip=20pt}
 
-%------------------------------------------------------------------------------
-% PAGE STYLES
-%------------------------------------------------------------------------------
-
-% Defines a minimal page style with only a footer rule (no headers)
-% Used for title pages and other special pages
-\newpagestyle{songempty}{%
-	\footrule
-}
-\pagestyle{songempty}
-
 \setmainlanguage{czech}
 
 %------------------------------------------------------------------------------
@@ -138,7 +127,7 @@
 	\ifodd\value{page}
 		\ifthenelse{\songmeasurebox>\textheight}{\null\clearpage}{}
 	\fi
-	\thispagestyle{songstyle}
+	\thispagestyle{songtitlestyle}
 	\directlua{print_song()}
 	\renewcommand{\songauthormark}{}
 	\preshortmark\songauthormark
@@ -203,9 +192,30 @@
 \newshortmark\songurlmark
 
 % Song page style - applied to all song pages
+\newpagestyle{songstyle}{%
+	\footrule
+	\setfoot[{%
+			\hspace*{-35pt}%
+			\raisebox{-5pt}[0pt]{%
+				\colorbox{white}{\includegraphics[height=25pt]{\oddfooterlogo}\hspace{10pt}}%
+			}%
+		}]
+		[]
+		[]{}
+		{}
+		{%
+			\raisebox{-5pt}[0pt]{%
+				\colorbox{white}{\hspace{10pt}\includegraphics[height=25pt]{\evenfooterlogo}}%
+			}%
+			\hspace*{-35pt}%
+		}
+}
+\pagestyle{songstyle}
+
+% Song title page style - applied to all song title pages
 % Header: song title (centered on odd, right on even), author below
 % Footer: URL on right side
-\newpagestyle{songstyle}{%
+\newpagestyle{songtitlestyle}{%
 	\footrule
 	\sethead[]
 		[
@@ -226,9 +236,22 @@
 		}
 		{}
 
-	\setfoot[\songurlfont \topshortmark\songurlmark]
-		[][]{}{}
+	\setfoot[{%
+			\hspace*{-35pt}%
+			\raisebox{-5pt}[0pt]{%
+				\colorbox{white}{\includegraphics[height=25pt]{\oddfooterlogo}\hspace{10pt}}%
+			}%
+		}]
+		[]
+		[\songurlfont \topshortmark\songurlmark]
 		{\songurlfont \topshortmark\songurlmark}
+		{}
+		{%
+			\raisebox{-5pt}[0pt]{%
+				\colorbox{white}{\hspace{10pt}\includegraphics[height=25pt]{\evenfooterlogo}}%
+			}%
+			\hspace*{-35pt}%
+		}
 }
 
 %------------------------------------------------------------------------------
@@ -274,29 +297,10 @@
 		\vspace{1.5cm}
 		\null
 	\end{titlepage}
-	\addheaderimg
 }
 
 % Disables paragraph indentation throughout the document
 \setlength{\parindent}{0pt}
-
-% \addheaderimg - Adds the between-page logo to all subsequent pages
-% Places logo in outer margin (left on odd pages, right on even)
-% Uses eso-pic to add background image to each page after shipout
-\newcommand{\addheaderimg}{%
-	\AddToShipoutPictureBG{%
-		\put(-60,0){%
-			\parbox[b][\paperheight + 20pt]{\paperwidth + 120pt}{%
-				\ifodd\value{page}
-				\else
-					\raggedleft
-				\fi
-				\includegraphics[width=120pt]{\betweenpagelogo}
-				\vfill
-			}
-		}
-	}
-}
 
 %------------------------------------------------------------------------------
 % TEMPLATE CONFIGURATION
