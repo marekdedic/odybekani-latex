@@ -22,7 +22,7 @@ function print_los(jobname)
 		local i = 0
 		for _, name in ipairs(sorted) do
 			if math.fmod(i, 5) == 0 and i > 0 then
-				output = output .. "\\songlistdivider"
+				output = output .. "\\songlistdivider{}"
 			end
 			i = i + 1
 			output = output .. "\\songlistentry{" .. lines[name] .. "}{" .. name .. "}"
