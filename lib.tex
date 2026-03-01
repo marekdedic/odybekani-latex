@@ -124,7 +124,7 @@
 % At begin: Initializes Lua recording with song metadata
 % At end: Captures rendered content, handles page breaks, applies song style
 \newenvironment{song}[4][]{%
-	\directlua{startrecording("#2", "#3", "#1", "#4", "\jobname")}
+	\directlua{startrecording("#2", "\luaescapestring{\detokenize{#3}}", "\luaescapestring{\detokenize{#1}}", "#4", "\jobname")}
 }{%
 	\directlua{stoprecording()}
 	\begin{lrbox}{\songbox}\noindent\begin{minipage}{\linewidth}\directlua{print_song()}\end{minipage}\end{lrbox}
