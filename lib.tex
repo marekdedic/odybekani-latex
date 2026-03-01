@@ -46,17 +46,21 @@
 \newlength{\songchordlen}
 \newlength{\songchordtmp}
 
-% \songlistentry{artist}{title} - Formats a single entry in the song list
-% Renders as: title ......................... artist
+% \songlistentry{number}{title} - Formats a single entry in the song list
+% Renders as: title ......................... number
+% pre_output_filter identifies these lines by the presence of glyph nodes.
 \newcommand{\songlistentry}[2]{%
 	#2 \hfill #1 \\
 }
 
-% \songlistdivider - Draws a dashed line separator between song entries
-% Uses negative vspace to compress the visual gap
+% \songlistdivider - Draws a dashed line separator between song entries.
+% pre_output_filter identifies this line by the \cleaders glue from \hdashrule
+% (subtype >= 100), which is absent from entry lines.
+% One template instance is emitted before all entries so its node list can be
+% copied; pre_output_filter removes it and re-inserts copies after every 5th
+% entry on each page (see print_los.lua).
 \newcommand{\songlistdivider}{%
-	\vspace{-20pt} \\
-	{\color{darkgray} \hdashrule{1.01\textwidth}{1pt}{1pt 2pt}} \\
+	{\color{darkgray}\hdashrule{1.01\textwidth}{1pt}{1pt 2pt}}\\%
 }
 
 % Custom multicols environment that gracefully handles single-column layout
@@ -94,12 +98,13 @@
 % Uses Lua script to generate formatted list of all songs
 \newcommand{\listofsongs}[1][1]{%
 	\clearpage
-	\newgeometry{a5paper,twoside,top=50pt,bottom=50pt,inner=70pt,outer=55pt,headheight=25pt,headsep=25pt,footskip=20pt}
+	\newgeometry{a5paper,twoside,top=50pt,bottom=90pt,inner=70pt,outer=55pt,headheight=25pt,headsep=25pt,footskip=60pt}
 	\begin{multicols}{#1}
 		\directlua{print_los("\jobname")}
 	\end{multicols}
 	\thispagestyle{losstyle}
 	\restoregeometry
+	\directlua{los_active = false}
 }
 
 %------------------------------------------------------------------------------

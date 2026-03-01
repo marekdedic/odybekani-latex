@@ -4,13 +4,136 @@
 -- "ch" is treated as a single letter between "h" and "i".
 --==============================================================================
 
+--==============================================================================
+-- Per-page divider insertion
+--
+-- Architecture:
+--   \songlistdivider and \songlistentry emit no markers; lines are classified
+--   by their node content in pre_output_filter.
+--
+--   Entry lines contain glyph nodes (text characters).
+--   Divider lines contain glue nodes with subtype >= 100 (\cleaders from
+--   \hdashrule), which are absent from entry lines.
+--
+--   print_los() emits ONE \songlistdivider before all entries (template only),
+--   then all entries with no dividers between them.
+--
+--   pre_output_filter runs once per page:
+--     1. Scans every hlist, classifying it as a divider or entry line.
+--        Divider hlists are removed (and their following glue); the first
+--        divider found is deep-copied as a template.
+--     2. Re-inserts template copies after every 5th entry hlist on the page.
+--==============================================================================
+
+local LOS_DIVIDER = 1
+local LOS_ENTRY   = 2
+
+-- Return LOS_DIVIDER, LOS_ENTRY, or 0 for a given hlist node.
+-- Entry lines contain glyph nodes; divider lines contain cleader glue (subtype >= 100).
+local function los_hlist_kind(hlist)
+	if not hlist.head then return 0 end
+	local glyph_id = node.id("glyph")
+	local glue_id  = node.id("glue")
+	for n in node.traverse(hlist.head) do
+		if n.id == glyph_id then
+			return LOS_ENTRY
+		elseif n.id == glue_id and n.subtype ~= nil and n.subtype >= 100 then
+			return LOS_DIVIDER
+		end
+	end
+	return 0
+end
+
+local los_divider_template = nil  -- deep copy of divider hlist, set on first encounter
+los_active = false  -- true only while LOS pages are being output
+
+-- Before each page is output: strip all divider hlists, then re-insert copies
+-- after every 5th entry hlist.
+luatexbase.add_to_callback("pre_output_filter",
+	function(head)
+		if not los_active then return head end
+		local hlist_id = node.id("hlist")
+		local glue_id  = node.id("glue")
+
+		-- Step 1: remove every divider hlist (+ its following glue); capture template.
+		local n = head
+		while n do
+			if n.id == hlist_id and los_hlist_kind(n) == LOS_DIVIDER then
+				if not los_divider_template then
+					los_divider_template = node.copy(n)
+					los_divider_template.next = nil
+					los_divider_template.prev = nil
+				end
+				local prev_node     = n.prev
+				local continue_from = n.next
+				if continue_from and continue_from.id == glue_id then
+					continue_from = continue_from.next
+				end
+				if prev_node then prev_node.next = continue_from
+				else              head = continue_from end
+				if continue_from then continue_from.prev = prev_node end
+				n = continue_from
+			else
+				n = n.next
+			end
+		end
+
+		if not los_divider_template then return head end
+
+		-- Step 2: insert a divider copy after every 5th entry hlist.
+		local count = 0
+		n = head
+		while n do
+			if n.id == hlist_id and los_hlist_kind(n) == LOS_ENTRY then
+				count = count + 1
+				if count % 5 == 0 then
+					local glue_after = n.next
+					if glue_after and glue_after.id == glue_id and glue_after.next then
+						local next_node  = glue_after.next
+						local div_copy   = node.copy(los_divider_template)
+						local glue_copy  = node.copy(glue_after)
+						local pre_space  = node.new(node.id("kern"))
+						pre_space.kern   = 1 * 65536  -- 1pt before divider
+						local post_space = node.new(node.id("kern"))
+						post_space.kern  = 2 * 65536  -- 2pt after divider
+						glue_after.next  = pre_space
+						pre_space.prev   = glue_after
+						pre_space.next   = div_copy
+						div_copy.prev    = pre_space
+						div_copy.next    = post_space
+						post_space.prev  = div_copy
+						post_space.next  = glue_copy
+						glue_copy.prev   = post_space
+						glue_copy.next   = next_node
+						next_node.prev   = glue_copy
+						n = next_node  -- skip past inserted divider; don't count it
+					else
+						n = n.next
+					end
+				else
+					n = n.next
+				end
+			else
+				n = n.next
+			end
+		end
+
+		return head
+	end,
+	"los_per_page_dividers"
+)
+
 --[[
 	Main function - reads .los file, sorts songs by title, prints list entries.
 	@param jobname string: LaTeX job name for .los file
 ]]
 function print_los(jobname)
+	los_active = true
 	if io.open(jobname .. ".los", "r") ~= nil then
-		local output = ""
+		-- Emit one template divider first so pre_output_filter can capture
+		-- its node list; pre_output_filter will remove it and re-insert copies
+		-- at the correct per-page positions.
+		local output = "\\songlistdivider{}"
 		lines = {}
 		for line in io.lines(jobname .. ".los") do
 			number, name = line:match("([^|]+)|([^|]+)")
@@ -19,12 +142,7 @@ function print_los(jobname)
 		sorted = {}
 		for n in pairs(lines) do table.insert(sorted, n) end
 		table.sort(sorted, wordSort)
-		local i = 0
 		for _, name in ipairs(sorted) do
-			if math.fmod(i, 5) == 0 and i > 0 then
-				output = output .. "\\songlistdivider{}"
-			end
-			i = i + 1
 			output = output .. "\\songlistentry{" .. lines[name] .. "}{" .. name .. "}"
 		end
 		los = io.open(jobname .. ".los", "w")
