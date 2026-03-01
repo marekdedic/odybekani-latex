@@ -240,7 +240,7 @@
 \newcommand{\songsettitleurl}[2]{%
 	\renewcommand{\songnamemark}{#1}
 	\preshortmark\songnamemark
-	%\renewcommand{\songurlmark}{\href{https://#2}{#2}}
+	%\renewcommand{\songurlmark}{\expandafter\ifx\expandafter\relax\detokenize{#2}\relax\else\href{https://#2}{#2}\fi}
 	\preshortmark\songurlmark
 }
 
